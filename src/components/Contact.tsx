@@ -1,11 +1,28 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Mail, Phone, Github, Linkedin, Facebook, Instagram, Send } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
+  message: z.string().trim().min(1, "Message is required").max(1000, "Message must be less than 1000 characters"),
+});
 
 export const Contact = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const { toast } = useToast();
+  
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const contactInfo = [
     { icon: Mail, text: "prottus2004@gmail.com", href: "mailto:prottus2004@gmail.com" },
@@ -16,8 +33,57 @@ export const Contact = () => {
     { icon: Github, url: "https://github.com/prottus2004", label: "GitHub" },
     { icon: Linkedin, url: "https://www.linkedin.com/in/prottus-manna-6b39b2268", label: "LinkedIn" },
     { icon: Facebook, url: "https://www.facebook.com/share/1ZXfdDUd1g/", label: "Facebook" },
-    { icon: Instagram, url: "https://www.instagram.com/__pratyush_manna__", label: "Instagram" },
+    { icon: Instagram, url: "https://www.instagram.com/__pratyush_manna__?igsh=ZWVremdtZHRvaHph", label: "Instagram" },
   ];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // Validate form data
+      const validatedData = contactSchema.parse(formData);
+
+      // Create WhatsApp message
+      const whatsappMessage = `*New Contact Form Message*%0A%0A*Name:* ${encodeURIComponent(validatedData.name)}%0A*Email:* ${encodeURIComponent(validatedData.email)}%0A*Message:* ${encodeURIComponent(validatedData.message)}`;
+      
+      // WhatsApp URL with phone number
+      const whatsappUrl = `https://wa.me/918697736679?text=${whatsappMessage}`;
+      
+      // Open WhatsApp in new tab
+      window.open(whatsappUrl, '_blank');
+      
+      toast({
+        title: "Success!",
+        description: "Opening WhatsApp to send your message.",
+      });
+
+      // Reset form
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const firstError = error.errors[0];
+        toast({
+          title: "Validation Error",
+          description: firstError.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to process your message. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   return (
     <section id="contact" className="py-20 relative" ref={ref}>
@@ -91,11 +157,16 @@ export const Contact = () => {
           >
             <h3 className="text-2xl font-bold mb-6">Send a Message</h3>
             
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <input
                   type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
                   placeholder="Your Name"
+                  required
+                  maxLength={100}
                   className="w-full px-4 py-3 bg-primary/10 border border-accent/20 rounded-lg focus:outline-none focus:border-accent transition-colors"
                 />
               </div>
@@ -103,7 +174,12 @@ export const Contact = () => {
               <div>
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   placeholder="Your Email"
+                  required
+                  maxLength={255}
                   className="w-full px-4 py-3 bg-primary/10 border border-accent/20 rounded-lg focus:outline-none focus:border-accent transition-colors"
                 />
               </div>
@@ -111,18 +187,24 @@ export const Contact = () => {
               <div>
                 <textarea
                   rows={4}
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
                   placeholder="Your Message"
+                  required
+                  maxLength={1000}
                   className="w-full px-4 py-3 bg-primary/10 border border-accent/20 rounded-lg focus:outline-none focus:border-accent transition-colors resize-none"
                 />
               </div>
 
               <motion.button
                 type="submit"
-                className="w-full py-3 bg-gradient-to-r from-primary to-accent rounded-lg text-white font-medium flex items-center justify-center gap-2"
-                whileHover={{ scale: 1.02, boxShadow: "0 0 30px hsl(var(--primary) / 0.5)" }}
-                whileTap={{ scale: 0.98 }}
+                disabled={isSubmitting}
+                className="w-full py-3 bg-gradient-to-r from-primary to-accent rounded-lg text-white font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                whileHover={!isSubmitting ? { scale: 1.02, boxShadow: "0 0 30px hsl(var(--primary) / 0.5)" } : {}}
+                whileTap={!isSubmitting ? { scale: 0.98 } : {}}
               >
-                <span>Send Message</span>
+                <span>{isSubmitting ? "Sending..." : "Send Message"}</span>
                 <Send size={18} />
               </motion.button>
             </form>

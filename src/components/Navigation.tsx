@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 export const Navigation = () => {
   const location = useLocation();
   const navItems = [
+    { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Skills", path: "/skills" },
     { name: "Projects", path: "/projects" },
@@ -53,7 +54,7 @@ export const Navigation = () => {
               { icon: Github, url: "https://github.com/prottus2004" },
               { icon: Linkedin, url: "https://www.linkedin.com/in/prottus-manna-6b39b2268" },
               { icon: Facebook, url: "https://www.facebook.com/share/1ZXfdDUd1g/" },
-              { icon: Instagram, url: "https://www.instagram.com/__pratyush_manna__" },
+              { icon: Instagram, url: "https://www.instagram.com/__pratyush_manna__?igsh=ZWVremdtZHRvaHph" },
             ].map(({ icon: Icon, url }, index) => (
               <motion.a
                 key={index}
