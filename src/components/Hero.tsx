@@ -51,7 +51,7 @@ export const Hero = () => {
               transition={{ delay: 0.5 }}
             >
               <motion.a
-                href="#contact"
+                href="/contact"
                 className="px-8 py-3 bg-gradient-to-r from-primary to-accent rounded-full text-white font-medium"
                 whileHover={{ scale: 1.05, boxShadow: "0 0 30px hsl(var(--primary) / 0.5)" }}
                 whileTap={{ scale: 0.95 }}
@@ -59,7 +59,7 @@ export const Hero = () => {
                 Get In Touch
               </motion.a>
               <motion.a
-                href="#projects"
+                href="/projects"
                 className="px-8 py-3 glass rounded-full font-medium"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

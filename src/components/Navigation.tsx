@@ -1,8 +1,16 @@
 import { motion } from "framer-motion";
 import { Github, Linkedin, Facebook, Instagram } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 export const Navigation = () => {
-  const navItems = ["About", "Skills", "Projects", "Experience", "Contact"];
+  const location = useLocation();
+  const navItems = [
+    { name: "About", path: "/about" },
+    { name: "Skills", path: "/skills" },
+    { name: "Projects", path: "/projects" },
+    { name: "Experience", path: "/experience" },
+    { name: "Contact", path: "/contact" },
+  ];
 
   return (
     <motion.nav
@@ -13,26 +21,30 @@ export const Navigation = () => {
     >
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <motion.h1
-            className="text-2xl font-bold gradient-text"
-            whileHover={{ scale: 1.05 }}
-          >
-            PM
-          </motion.h1>
+          <Link to="/">
+            <motion.h1
+              className="text-2xl font-bold gradient-text"
+              whileHover={{ scale: 1.05 }}
+            >
+              PM
+            </motion.h1>
+          </Link>
 
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item, index) => (
-              <motion.a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-foreground/80 hover:text-foreground transition-colors"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.1 }}
-              >
-                {item}
-              </motion.a>
+              <Link key={item.name} to={item.path}>
+                <motion.div
+                  className={`text-foreground/80 hover:text-foreground transition-colors ${
+                    location.pathname === item.path ? "text-accent font-semibold" : ""
+                  }`}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.1 }}
+                >
+                  {item.name}
+                </motion.div>
+              </Link>
             ))}
           </div>
 
