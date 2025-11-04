@@ -13,7 +13,7 @@ export const Projects = () => {
       title: "Vision AI Suit",
       period: "May 2025 - June 2025",
       description: "A Real-time Image Captioning and Segmentation Model with Object Detection using stacked architecture with 3 different models working simultaneously.",
-      technologies: ["$(CNN+LSTM)$ architecture", "U-Net", "Python", "PyTorch", "OpenCV", "Streamlit"],
+      technologies: ["CNN + LSTM", "U-Net", "Python", "PyTorch", "OpenCV", "Streamlit"],
       gradient: "from-blue-500 to-purple-500",
     },
     {
@@ -21,7 +21,7 @@ export const Projects = () => {
       title: "Fraud Guard AI",
       period: "June 2025 - July 2025",
       description: "ML Powered AI Based Fraud Detection System with high accuracy and real-time fraud transaction alerts. Features dashboard, email alerts, and weekly self-retraining.",
-      technologies: ["Stacked emblem of high accuracy Supervised, Unsupervised and Graph Based Models"],
+      technologies: ["Supervised ML", "Unsupervised ML", "Graph Models", "React", "Email API"],
       gradient: "from-red-500 to-pink-500",
     },
     {
@@ -100,3 +100,4 @@ export const Projects = () => {
     </section>
   );
 };
+
