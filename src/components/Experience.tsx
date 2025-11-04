@@ -15,9 +15,8 @@ export const Experience = () => {
     description: [
       "Worked as a solo intern on three comprehensive Machine Learning projects",
       "Gained expertise in using LLMs efficiently and developing new architectures",
-      "Trained and evaluated model accuracy, created stacked ensembles",
+      "Trained and evaluated model accuracy, creating stacked emblem",
       "Worked extensively with APIs and fine-tuned pre-existing model weights",
-      "Achieved 83% score and recognized as the best intern",
     ],
     skills: ["LLMs", "Model Training", "API Integration", "Model Evaluation", "Architecture Design"],
   };
