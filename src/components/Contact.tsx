@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { Mail, Phone, Github, Linkedin, Facebook, Instagram, Send } from "lucide-react";
+import { Mail, Phone, Github, Send } from "lucide-react"; // Removed Linkedin, Facebook, Instagram
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 
@@ -30,10 +30,8 @@ export const Contact = () => {
   ];
 
   const socialLinks = [
-    { icon: Github, url: "https://github.com/prottus2004", label: "GitHub" },
-    { icon: Linkedin, url: "https://www.linkedin.com/in/prottus-manna-6b39b2268", label: "LinkedIn" },
-    { icon: Facebook, url: "https://www.facebook.com/share/1ZXfdDUd1g/", label: "Facebook" },
-    { icon: Instagram, url: "https://www.instagram.com/__pratyush_manna__?igsh=ZWVremdtZHRvaHph", label: "Instagram" },
+    { icon: Github, url: "https://github.com/Prottus-manna", label: "GitHub" },
+    // Removed LinkedIn, Facebook, and Instagram
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
