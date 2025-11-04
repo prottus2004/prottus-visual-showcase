@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Github } from "lucide-react"; // Removed Linkedin, Facebook, Instagram
+import { Github, Linkedin, Facebook, Instagram } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 export const Navigation = () => {
@@ -51,8 +51,10 @@ export const Navigation = () => {
 
           <div className="flex items-center gap-4">
             {[
-              { icon: Github, url: "https://github.com/Prottus-manna" },
-              // Removed LinkedIn, Facebook, and Instagram
+              { icon: Github, url: "https://github.com/prottus2004" },
+              { icon: Linkedin, url: "https://www.linkedin.com/in/prottus-manna-6b39b2268" },
+              { icon: Facebook, url: "https://www.facebook.com/share/1ZXfdDUd1g/" },
+              { icon: Instagram, url: "https://www.instagram.com/__pratyush_manna__?igsh=ZWVremdtZHRvaHph" },
             ].map(({ icon: Icon, url }, index) => (
               <motion.a
                 key={index}
