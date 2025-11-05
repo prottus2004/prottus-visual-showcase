@@ -3,11 +3,38 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { GraduationCap, Award, Heart } from "lucide-react";
 
+// Variants for each card
+const cardVariantsLeft = {
+  hidden: { opacity: 0, x: -80 },
+  visible: { 
+    opacity: 1, 
+    x: 0, 
+    transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.2 } 
+  }
+};
+const cardVariantsBottom = {
+  hidden: { opacity: 0, y: 80 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.4 } 
+  }
+};
+const cardVariantsRight = {
+  hidden: { opacity: 0, x: 80 },
+  visible: { 
+    opacity: 1, 
+    x: 0, 
+    transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.6 } 
+  }
+};
+
 export const About = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   const education = [
+    // ... (Your education data is unchanged)
     {
       degree: "B.Tech in Information Technology",
       institution: "Institute of Engineering and Management, Kolkata",
@@ -29,12 +56,14 @@ export const About = () => {
   ];
 
   const achievements = [
+    // ... (Your achievements data is unchanged)
     "Secured 83% score and recognized as the best intern by Zidio Development",
     "Selected for visit to NUS National University of Singapore based on 1st Year performance",
     "Training provided on AI/ML, IoT and Data Analytics at NUS",
   ];
 
   const hobbies = [
+    // ... (Your hobbies data is unchanged)
     "Augmented Reality Development",
     "Cyber Security Techniques",
     "Painting ",
@@ -55,10 +84,11 @@ export const About = () => {
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8">
+          {/* Card 1: Education */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            variants={cardVariantsLeft}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
             className="glass rounded-2xl p-8 space-y-6"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -73,7 +103,7 @@ export const About = () => {
                 className="border-l-2 border-accent/30 pl-4 space-y-1"
                 initial={{ opacity: 0, x: -20 }}
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ delay: 0.3 + index * 0.1 }}
+                transition={{ delay: 0.5 + index * 0.1 }}
               >
                 <h4 className="font-semibold text-accent">{edu.degree}</h4>
                 <p className="text-sm text-foreground/70">{edu.institution}</p>
@@ -82,10 +112,11 @@ export const About = () => {
             ))}
           </motion.div>
 
+          {/* Card 2: Achievements */}
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            variants={cardVariantsBottom}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
             className="glass rounded-2xl p-8 space-y-6"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -100,7 +131,7 @@ export const About = () => {
                 className="flex items-start gap-3"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ delay: 0.5 + index * 0.1 }}
+                transition={{ delay: 0.7 + index * 0.1 }}
               >
                 <div className="w-2 h-2 bg-accent rounded-full mt-2 flex-shrink-0" />
                 <p className="text-foreground/80">{achievement}</p>
@@ -108,10 +139,11 @@ export const About = () => {
             ))}
           </motion.div>
 
+          {/* Card 3: Hobbies */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.6 }}
+            variants={cardVariantsRight}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
             className="glass rounded-2xl p-8 space-y-6"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -127,7 +159,7 @@ export const About = () => {
                   className="p-3 bg-primary/10 rounded-lg border border-accent/20"
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: 0.7 + index * 0.1 }}
+                  transition={{ delay: 0.9 + index * 0.1 }}
                   whileHover={{ scale: 1.05, borderColor: "hsl(var(--accent))" }}
                 >
                   <p className="text-sm text-center">{hobby}</p>
