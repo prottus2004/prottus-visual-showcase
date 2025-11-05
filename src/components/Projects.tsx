@@ -1,7 +1,8 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useInView } from "framer-motion";
-import React, { useRef } from "react";
-import { Eye, Brain, Shield, ExternalLink } from "lucide-react";
+import React, { useRef, useState } from "react"; // Import useState
+import { Eye, Brain, Shield, Play } from "lucide-react"; // Import Play icon
+import { Dialog, DialogContent } from "@/components/ui/dialog"; // Import Dialog
 
 // --- Reusable Card Interaction Logic (Unchanged) ---
 const useCardInteraction = () => {
@@ -40,14 +41,14 @@ const useCardInteraction = () => {
   };
 };
 
-// --- New Variants ---
+// --- Animation Variants (Unchanged) ---
 const gridVariants = {
-  hidden: { opacity: 1 }, // Keep container visible
+  hidden: { opacity: 1 },
   visible: {
     opacity: 1,
     transition: {
       delayChildren: 0.2,
-      staggerChildren: 0.2, // Stagger each card
+      staggerChildren: 0.2,
     },
   },
 };
@@ -62,25 +63,27 @@ const cardVariants = {
   },
 };
 
-// --- Project Card Component ---
-const ProjectCard = ({ project }) => {
+// --- Project Card Component (Modified) ---
+// We add two new props: `onViewDetails` and `hasVideo`
+const ProjectCard = ({ project, onViewDetails, hasVideo }) => {
   const interaction = useCardInteraction();
   
   return (
     <motion.div
-      variants={cardVariants} // Use the new card variants
+      variants={cardVariants}
       className="glass rounded-2xl overflow-hidden group"
       style={interaction.parentStyle}
       onMouseMove={interaction.handleMouseMove}
       onMouseLeave={interaction.handleMouseLeave}
     >
       <motion.div 
-        className="h-full w-full"
+        className="h-full w-full flex flex-col" // Added flex-col to push button to bottom
         style={interaction.style}
       >
         <div className={`h-2 bg-gradient-to-r ${project.gradient}`} />
         
-        <div className="p-6 space-y-4">
+        {/* Added flex-1 and flex-col to make content fill space */}
+        <div className="p-6 space-y-4 flex-1 flex flex-col"> 
           <motion.div 
             className={`w-14 h-14 rounded-xl bg-gradient-to-br ${project.gradient} p-3 group-hover:scale-110 transition-transform`}
             style={{ transform: "translateZ(50px)" }}
@@ -100,7 +103,9 @@ const ProjectCard = ({ project }) => {
             {project.description}
           </p>
 
-          <div className="flex flex-wrap gap-2" style={{ transform: "translateZ(40px)" }}>
+          <div className="flex-grow" /> {/* Spacer to push content down */}
+
+          <div className="flex flex-wrap gap-2 pt-4" style={{ transform: "translateZ(40px)" }}>
             {project.technologies.map((tech, techIndex) => (
               <span
                 key={techIndex}
@@ -112,13 +117,15 @@ const ProjectCard = ({ project }) => {
           </div>
 
           <motion.button
-            className="w-full mt-4 py-2 glass rounded-lg flex items-center justify-center gap-2 group/btn"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            className="w-full mt-4 py-2 glass rounded-lg flex items-center justify-center gap-2 group/btn disabled:opacity-40 disabled:cursor-not-allowed"
+            whileHover={hasVideo ? { scale: 1.02 } : {}}
+            whileTap={hasVideo ? { scale: 0.98 } : {}}
             style={{ transform: "translateZ(20px)" }}
+            onClick={onViewDetails} // Trigger the function from props
+            disabled={!hasVideo} // Disable button if no video
           >
-            <span>View Details</span>
-            <ExternalLink size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+            <span>{hasVideo ? "View Demo" : "Details"}</span>
+            {hasVideo && <Play size={16} className="group-hover/btn:translate-x-1 transition-transform" />}
           </motion.button>
         </div>
       </motion.div>
@@ -126,13 +133,15 @@ const ProjectCard = ({ project }) => {
   );
 };
 
-// --- Main Projects Component ---
+// --- Main Projects Component (Modified) ---
 export const Projects = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
+  // Add state to track the active video URL
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+
   const projects = [
-    // ... (Your projects data is unchanged)
     {
       icon: Eye,
       title: "Vision AI Suit",
@@ -140,6 +149,8 @@ export const Projects = () => {
       description: "A Real-time Image Captioning and Segmentation Model with Object Detection using stacked architecture with  different models working simultaneously to caption, segment instances, detect objects and identify and provide output.",
       technologies: ["CNN + LSTM","U-Net","Various edge detection algorithms", "Mask R-CNN","Faster R-CNN", "Python", "PyTorch", "OpenCV", "Streamlit"],
       gradient: "from-blue-500 to-purple-500",
+      // Embeddable LinkedIn URL
+      videoUrl: "https://www.linkedin.com/embed/feed/update/urn:li:activity:7347253949453819904",
     },
     {
       icon: Shield,
@@ -148,6 +159,8 @@ export const Projects = () => {
       description: "ML Powered AI Based Fraud Detection System with high accuracy and real-time fraud transaction alerts. Features dashboard, email alerts, and weekly self-retraining.",
       technologies: ["Supervised ML", "Unsupervised ML", "Graph Models", "React", "Email API","Kafka"],
       gradient: "from-red-500 to-pink-500",
+      // Embeddable Google Drive URL
+      videoUrl: "https://drive.google.com/file/d/1bkOfZUWhVQg563-N316FH7ZTb5fGHV9o/preview?autoplay=1",
     },
     {
       icon: Brain,
@@ -156,6 +169,7 @@ export const Projects = () => {
       description: "AI Powered PC Voice Assistant with ability to understand user intent, open/close apps, and perform PC tasks through voice commands. More advanced than Siri and Bixby.",
       technologies: ["TTS", "STT", "Automation", "Gemini API", "Python", "Ollama Models"],
       gradient: "from-green-500 to-cyan-500",
+      videoUrl: null, // No video for this one
     },
   ];
 
@@ -181,11 +195,33 @@ export const Projects = () => {
           {projects.map((project, index) => (
             <ProjectCard 
               key={index}
-              project={project} 
+              project={project}
+              hasVideo={!!project.videoUrl}
+              onViewDetails={() => project.videoUrl && setActiveVideo(project.videoUrl)}
             />
           ))}
         </motion.div>
       </div>
+
+      {/* === VIDEO DIALOG (MODAL) === */}
+      <Dialog 
+        open={!!activeVideo} // Show dialog if activeVideo is not null
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setActiveVideo(null); // Close dialog and reset state
+          }
+        }}
+      >
+        <DialogContent className="glass p-0 border-accent/20 bg-black/50 max-w-4xl w-full aspect-video rounded-lg">
+          <iframe
+            src={activeVideo || ""}
+            className="w-full h-full rounded-lg"
+            frameBorder="0"
+            allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
