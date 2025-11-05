@@ -8,6 +8,7 @@ export const Experience = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   const experience = {
+    // ... (Your experience data is unchanged)
     company: "Zidio Developments",
     role: "Machine Learning Intern",
     period: "May 2025 - August 2025",
@@ -36,9 +37,10 @@ export const Experience = () => {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
+          initial={{ opacity: 0, x: -100 }}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          // Replaced old transition with a spring
+          transition={{ type: "spring", stiffness: 80, damping: 15, delay: 0.2 }}
           className="max-w-4xl mx-auto"
         >
           <div className="relative pl-8 border-l-2 border-accent/30">
@@ -70,7 +72,7 @@ export const Experience = () => {
                     className="flex items-start gap-3"
                     initial={{ opacity: 0, x: -20 }}
                     animate={isInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ delay: 0.3 + index * 0.1 }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
                   >
                     <div className="w-2 h-2 bg-accent rounded-full mt-2 flex-shrink-0" />
                     <p className="text-foreground/80">{item}</p>
@@ -87,7 +89,7 @@ export const Experience = () => {
                       className="px-4 py-2 bg-primary/20 rounded-full text-sm border border-accent/20"
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                      transition={{ delay: 0.5 + index * 0.1 }}
+                      transition={{ delay: 0.7 + index * 0.1 }}
                       whileHover={{ scale: 1.1, borderColor: "hsl(var(--accent))" }}
                     >
                       {skill}
