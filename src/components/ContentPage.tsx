@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Canvas } from "@react-three/fiber";
-import { Stars, ScrollControls } from "@react-three/drei";
+import { Stars, ScrollControls, OrbitControls } from "@react-three/drei"; // Import OrbitControls
 import { Navigation } from "@/components/Navigation";
 import { PageShape } from "@/components/PageShape";
 import React from "react";
@@ -45,7 +45,18 @@ export const ContentPage = ({ children, shape }: ContentPageProps) => {
           <pointLight position={[-10, -10, -10]} intensity={1} color="#22d3ee" />
           <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
           
-          {/* ScrollControls links the <PageShape> to the scroll bar */}
+          {/* === ADDED THIS SECTION === */}
+          {/* This makes the entire scene auto-rotate, creating the "lively" feel */}
+          <OrbitControls 
+            enableZoom={false} 
+            enablePan={false} 
+            autoRotate 
+            autoRotateSpeed={0.5} 
+            minPolarAngle={Math.PI / 2}
+            maxPolarAngle={Math.PI / 2}
+          />
+          {/* === END ADDED SECTION === */}
+
           <ScrollControls pages={2} damping={0.25}>
             <PageShape shape={shape} />
           </ScrollControls>
