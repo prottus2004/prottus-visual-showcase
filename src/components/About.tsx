@@ -17,13 +17,13 @@ export const About = () => {
     {
       degree: "XI (ISC)",
       institution: "National Gems Higher Secondary School, Behala",
-      grade: "86%",
+      grade: "76%",
       year: "2022",
     },
     {
       degree: "X (ICSE)",
       institution: "National Gems Higher Secondary School, Behala",
-      grade: "76%",
+      grade: "86%",
       year: "2020",
     },
   ];
@@ -37,7 +37,7 @@ export const About = () => {
   const hobbies = [
     "Augmented Reality Development",
     "Cyber Security Techniques",
-    "Painting & Digital Art",
+    "Painting ",
     "Playing Guitar & Singing",
   ];
 
@@ -140,4 +140,3 @@ export const About = () => {
     </section>
   );
 };
-
