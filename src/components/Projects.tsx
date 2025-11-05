@@ -12,8 +12,8 @@ export const Projects = () => {
       icon: Eye,
       title: "Vision AI Suit",
       period: "May 2025 - June 2025",
-      description: "A Real-time Image Captioning and Segmentation Model with Object Detection using stacked architecture with 3 different models working simultaneously.",
-      technologies: ["CNN + LSTM", "U-Net", "Python", "PyTorch", "OpenCV", "Streamlit"],
+      description: "A Real-time Image Captioning and Segmentation Model with Object Detection using stacked architecture with  different models working simultaneously to caption, segment instances, detect objects and identify and provide output.",
+      technologies: ["CNN + LSTM","U-Net","Various edge detection algorithms", "Mask R-CNN","Faster R-CNN", "Python", "PyTorch", "OpenCV", "Streamlit"],
       gradient: "from-blue-500 to-purple-500",
     },
     {
@@ -21,7 +21,7 @@ export const Projects = () => {
       title: "Fraud Guard AI",
       period: "June 2025 - July 2025",
       description: "ML Powered AI Based Fraud Detection System with high accuracy and real-time fraud transaction alerts. Features dashboard, email alerts, and weekly self-retraining.",
-      technologies: ["Supervised ML", "Unsupervised ML", "Graph Models", "React", "Email API"],
+      technologies: ["Supervised ML", "Unsupervised ML", "Graph Models", "React", "Email API","Kafka"],
       gradient: "from-red-500 to-pink-500",
     },
     {
@@ -29,7 +29,7 @@ export const Projects = () => {
       title: "Optimus AI",
       period: "July 2025 - Present",
       description: "AI Powered PC Voice Assistant with ability to understand user intent, open/close apps, and perform PC tasks through voice commands. More advanced than Siri and Bixby.",
-      technologies: ["TTS", "STT", "Automation", "Gemini API", "Python"],
+      technologies: ["TTS", "STT", "Automation", "Gemini API", "Python", "Ollama Models"],
       gradient: "from-green-500 to-cyan-500",
     },
   ];
@@ -100,4 +100,3 @@ export const Projects = () => {
     </section>
   );
 };
-
