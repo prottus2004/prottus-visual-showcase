@@ -1,7 +1,7 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useInView } from "framer-motion";
 import React, { useRef, useState } from "react";
-import { Eye, Brain, Shield, Play, ExternalLink, ArrowLeft } from "lucide-react"; // Import ArrowLeft
+import { Eye, Brain, Shield, Play, ExternalLink, X } from "lucide-react"; // Import X (ArrowLeft is no longer needed here)
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog"; // Import DialogClose
 import { Canvas } from "@react-three/fiber";
 import { Stars, OrbitControls } from "@react-three/drei";
@@ -226,7 +226,7 @@ export const Projects = () => {
         </motion.div>
       </div>
 
-      {/* Video Dialog (Unchanged) */}
+      {/* Video Dialog (Uses <ArrowLeft> from dialog.tsx) */}
       <Dialog 
         open={!!activeVideo}
         onOpenChange={(isOpen) => {
@@ -251,9 +251,9 @@ export const Projects = () => {
       <Dialog open={isComingSoonOpen} onOpenChange={setIsComingSoonOpen}>
         <DialogContent className="glass p-0 border-accent/20 bg-background/80 max-w-lg w-full rounded-lg overflow-hidden backdrop-blur-md">
           
-          {/* Manually added close button */}
+          {/* Manually added close button with "X" icon */}
           <DialogClose className="absolute right-4 top-4 z-20 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-accent data-[state=open]:text-muted-foreground hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
-            <ArrowLeft className="h-4 w-4" />
+            <X className="h-4 w-4" /> {/* Changed to X */}
             <span className="sr-only">Close</span>
           </DialogClose>
         
