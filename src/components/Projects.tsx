@@ -1,8 +1,10 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useInView } from "framer-motion";
 import React, { useRef, useState } from "react";
-import { Eye, Brain, Shield, Play, ExternalLink } from "lucide-react"; // Import Play and ExternalLink
+import { Eye, Brain, Shield, Play, ExternalLink } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Canvas } from "@react-three/fiber"; // Import Canvas for 3D modal
+import { Stars, OrbitControls } from "@react-three/drei"; // Import Stars and OrbitControls
 
 // --- Reusable Card Interaction Logic (Unchanged) ---
 const useCardInteraction = () => {
@@ -64,11 +66,12 @@ const cardVariants = {
 };
 
 // --- Project Card Component (Modified) ---
-// Now accepts `project` and `onShowModal`
-const ProjectCard = ({ project, onShowModal }) => {
+// Now accepts `onShowModal` and `onShowComingSoon`
+const ProjectCard = ({ project, onShowModal, onShowComingSoon }) => {
   const interaction = useCardInteraction();
-  const hasVideo = !!project.videoUrl;
-  
+  const hasLink = !!project.videoUrl;
+  const isComingSoon = project.comingSoon;
+
   return (
     <motion.div
       variants={cardVariants}
@@ -119,30 +122,34 @@ const ProjectCard = ({ project, onShowModal }) => {
           {/* === MODIFIED BUTTON LOGIC === */}
           <motion.button
             className="w-full mt-4 py-2 glass rounded-lg flex items-center justify-center gap-2 group/btn disabled:opacity-40 disabled:cursor-not-allowed"
-            whileHover={hasVideo ? { scale: 1.02 } : {}}
-            whileTap={hasVideo ? { scale: 0.98 } : {}}
+            whileHover={(hasLink || isComingSoon) ? { scale: 1.02 } : {}}
+            whileTap={(hasLink || isComingSoon) ? { scale: 0.98 } : {}}
             style={{ transform: "translateZ(20px)" }}
             onClick={() => {
-              if (!hasVideo) return;
-              if (project.embeddable) {
-                // If embeddable, open modal
-                onShowModal(project.videoUrl);
-              } else {
-                // If not embeddable (LinkedIn), open in new tab
-                window.open(project.videoUrl, '_blank', 'noopener,noreferrer');
+              if (isComingSoon) {
+                onShowComingSoon(); // Open Coming Soon modal
+              } else if (hasLink) {
+                if (project.embeddable) {
+                  onShowModal(project.videoUrl); // Open video modal
+                } else {
+                  window.open(project.videoUrl, '_blank', 'noopener,noreferrer'); // Open new tab
+                }
               }
             }}
-            disabled={!hasVideo}
+            disabled={!(hasLink || isComingSoon)}
           >
-            <span>{hasVideo ? "View Demo" : "Details"}</span>
-            {/* Conditionally show Play or ExternalLink icon */}
-            {hasVideo && (
-              project.embeddable ? (
-                <Play size={16} className="group-hover/btn:translate-x-1 transition-transform" />
-              ) : (
-                <ExternalLink size={16} className="group-hover/btn:translate-x-1 transition-transform" />
-              )
-            )}
+            <span>{(hasLink || isComingSoon) ? "View Demo" : "Details"}</span>
+            
+            {/* Show Play icon for embeddable video OR coming soon */}
+            {(hasLink && project.embeddable) || isComingSoon ? (
+              <Play size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+            ) : null}
+
+            {/* Show ExternalLink icon for non-embeddable link */}
+            {hasLink && !project.embeddable ? (
+              <ExternalLink size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+            ) : null}
+            
           </motion.button>
           {/* === END MODIFICATION === */}
         </div>
@@ -156,6 +163,7 @@ export const Projects = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  const [isComingSoonOpen, setIsComingSoonOpen] = useState(false); // New state
 
   // === MODIFIED PROJECTS ARRAY ===
   const projects = [
@@ -166,9 +174,9 @@ export const Projects = () => {
       description: "A Real-time Image Captioning and Segmentation Model with Object Detection using stacked architecture with  different models working simultaneously to caption, segment instances, detect objects and identify and provide output.",
       technologies: ["CNN + LSTM","U-Net","Various edge detection algorithms", "Mask R-CNN","Faster R-CNN", "Python", "PyTorch", "OpenCV", "Streamlit"],
       gradient: "from-blue-500 to-purple-500",
-      // Regular LinkedIn share link
       videoUrl: "https://www.linkedin.com/posts/prottus-manna-6b39b2268_visionaisuit-ai-cnn-activity-7347253949453819904-_06z",
-      embeddable: false, // Set to false
+      embeddable: false,
+      comingSoon: false, // Added this
     },
     {
       icon: Shield,
@@ -177,9 +185,9 @@ export const Projects = () => {
       description: "ML Powered AI Based Fraud Detection System with high accuracy and real-time fraud transaction alerts. Features dashboard, email alerts, and weekly self-retraining.",
       technologies: ["Supervised ML", "Unsupervised ML", "Graph Models", "React", "Email API","Kafka"],
       gradient: "from-red-500 to-pink-500",
-      // Correct Google Drive embed link
       videoUrl: "https://drive.google.com/file/d/1bkOfZUWhVQg563-N316FH7ZTb5fGHV9o/preview",
-      embeddable: true, // Set to true
+      embeddable: true,
+      comingSoon: false,
     },
     {
       icon: Brain,
@@ -189,7 +197,8 @@ export const Projects = () => {
       technologies: ["TTS", "STT", "Automation", "Gemini API", "Python", "Ollama Models"],
       gradient: "from-green-500 to-cyan-500",
       videoUrl: null,
-      embeddable: false, // Set to false
+      embeddable: false,
+      comingSoon: true, // Set to true
     },
   ];
   // === END MODIFICATION ===
@@ -217,13 +226,14 @@ export const Projects = () => {
             <ProjectCard 
               key={index}
               project={project}
-              onShowModal={setActiveVideo} // Pass the modal setter
+              onShowModal={setActiveVideo}
+              onShowComingSoon={() => setIsComingSoonOpen(true)} // Pass new handler
             />
           ))}
         </motion.div>
       </div>
 
-      {/* Video Dialog (Modal) */}
+      {/* Video Dialog (Unchanged) */}
       <Dialog 
         open={!!activeVideo}
         onOpenChange={(isOpen) => {
@@ -237,11 +247,46 @@ export const Projects = () => {
             src={activeVideo || ""}
             className="w-full h-full rounded-lg"
             frameBorder="0"
-            // Added sandbox for better security and to help with Google Drive
             sandbox="allow-scripts allow-same-origin allow-presentation"
             allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
             allowFullScreen
           ></iframe>
+        </DialogContent>
+      </Dialog>
+
+      {/* === NEW COMING SOON DIALOG === */}
+      <Dialog open={isComingSoonOpen} onOpenChange={setIsComingSoonOpen}>
+        <DialogContent className="glass p-0 border-accent/20 bg-background/80 max-w-lg w-full rounded-lg overflow-hidden backdrop-blur-md">
+          <div className="relative w-full h-96">
+            {/* 3D Background for the modal */}
+            <div className="absolute inset-0 z-0 opacity-40">
+              <Canvas camera={{ position: [0, 0, 1], fov: 45 }}>
+                <ambientLight intensity={1} />
+                <Stars radius={50} depth={20} count={3000} factor={4} saturation={0} fade speed={1} />
+                <OrbitControls 
+                  enableZoom={false} 
+                  enablePan={false} 
+                  autoRotate 
+                  autoRotateSpeed={0.4} 
+                  minPolarAngle={Math.PI / 2}
+                  maxPolarAngle={Math.PI / 2}
+                />
+              </Canvas>
+            </div>
+            {/* Text Content */}
+            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-6">
+              <motion.h2 
+                className="text-4xl font-bold gradient-text mb-4"
+                animate={{ scale: [1, 1.05, 1], opacity: [0.8, 1, 0.8] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              >
+                Coming Soon...
+              </motion.h2>
+              <p className="text-lg text-foreground/80">
+                The demo for **Optimus AI** is being polished and will be available shortly.
+              </p>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </section>
