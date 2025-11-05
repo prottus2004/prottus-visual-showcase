@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import React, { useState, useEffect } from "react"; // Import useState and useEffect
+import React, { useState } from "react"; // Import useState
 import { Welcome } from "@/components/Welcome"; // Import the Welcome component
 
 // Import Pages
@@ -30,7 +30,6 @@ const AnimatedRoutes = () => {
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/experience" element={<ExperiencePage />} />
         <Route path="/contact" element={<ContactPage />} />
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
@@ -38,47 +37,33 @@ const AnimatedRoutes = () => {
 };
 
 const App = () => {
-  // State to manage if we're checking for the visit, and if we should show the welcome screen
-  const [isCheckingVisit, setIsCheckingVisit] = useState(true);
-  const [showWelcomeScreen, setShowWelcomeScreen] = useState(false);
+  // State to manage showing the welcome screen.
+  const [showWelcomeScreen, setShowWelcomeScreen] = useState(true);
 
-  useEffect(() => {
-    // Check localStorage on mount
-    const hasVisited = localStorage.getItem("hasVisited");
-    if (!hasVisited) {
-      // If user hasn't visited, show the welcome screen
-      setShowWelcomeScreen(true);
-    }
-    // Finished checking
-    setIsCheckingVisit(false);
-  }, []); // Empty dependency array means this runs once on mount
-
+  // This function will be passed to the Welcome component to call when it's done
   const handleWelcomeFinished = () => {
-    // Set the flag in localStorage so it doesn't show again
-    localStorage.setItem("hasVisited", "true");
-    // Hide the welcome screen
     setShowWelcomeScreen(false);
   };
-
-  // While checking, we can show a blank screen or a minimal loader
-  if (isCheckingVisit) {
-    return null; // Or a loading spinner
-  }
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
+
+        {/* AnimatePresence will handle the exit animation of the Welcome screen */}
+        <AnimatePresence>
+          {showWelcomeScreen && <Welcome onFinished={handleWelcomeFinished} />}
+        </AnimatePresence>
         
-        {/* Conditional Rendering */}
-        {showWelcomeScreen ? (
-          <Welcome onFinished={handleWelcomeFinished} />
-        ) : (
-          <BrowserRouter>
-            <AnimatedRoutes />
-          </BrowserRouter>
-        )}
+        {/* We render the main app simultaneously.
+          The Welcome screen will overlay it using a fixed position.
+          When the Welcome screen animates out, the main app is revealed.
+        */}
+        <BrowserRouter>
+          <AnimatedRoutes />
+        </BrowserRouter>
+
       </TooltipProvider>
     </QueryClientProvider>
   );
