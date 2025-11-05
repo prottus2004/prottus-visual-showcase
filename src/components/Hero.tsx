@@ -1,7 +1,8 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"; // Import new hooks
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import profileImage from "@/assets/profile.jpeg";
-import React from "react"; // Import React
+import React from "react";
+import { Link } from "react-router-dom"; // Import the Link component
 
 export const Hero = () => {
   // --- Start of interactive mouse-follow logic ---
@@ -56,7 +57,6 @@ export const Hero = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           
-          {/* ... (Left side content remains unchanged) ... */}
           <motion.div
             className="flex-1 space-y-6"
             initial={{ opacity: 0, x: -100 }}
@@ -98,22 +98,26 @@ export const Hero = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
             >
-              <motion.a
-                href="/contact"
-                className="px-8 py-3 bg-gradient-to-r from-primary to-accent rounded-full text-white font-medium"
-                whileHover={{ scale: 1.05, boxShadow: "0 0 30px hsl(var(--primary) / 0.5)" }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Get In Touch
-              </motion.a>
-              <motion.a
-                href="/projects"
-                className="px-8 py-3 glass rounded-full font-medium"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                View Projects
-              </motion.a>
+              {/* === FIX: Replaced <motion.a> with <Link> and <motion.div> === */}
+              <Link to="/contact">
+                <motion.div
+                  className="px-8 py-3 bg-gradient-to-r from-primary to-accent rounded-full text-white font-medium cursor-pointer" // Added cursor-pointer
+                  whileHover={{ scale: 1.05, boxShadow: "0 0 30px hsl(var(--primary) / 0.5)" }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Get In Touch
+                </motion.div>
+              </Link>
+              <Link to="/projects">
+                <motion.div
+                  className="px-8 py-3 glass rounded-full font-medium cursor-pointer" // Added cursor-pointer
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  View Projects
+                </motion.div>
+              </Link>
+              {/* === END FIX === */}
             </motion.div>
           </motion.div>
 
@@ -123,7 +127,6 @@ export const Hero = () => {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            // Apply the new interactive styles
             style={{ 
               perspective: "1000px",
               translateX,
@@ -132,25 +135,21 @@ export const Hero = () => {
           >
             <motion.div
               className="relative"
-              // Apply rotation and remove the old y-axis float
               style={{
                 rotateX,
                 rotateY,
                 transformStyle: "preserve-3d",
               }}
-              // Remove the old animation:
-              // animate={{ y: [0, -20, 0] }}
-              // transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             >
               <div 
                 className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-full blur-3xl opacity-30"
-                style={{ transform: "translateZ(-50px)" }} // Push glow back
+                style={{ transform: "translateZ(-50px)" }}
               />
               <img
                 src={profileImage}
                 alt="Prottus Manna"
                 className="relative w-80 h-80 object-cover rounded-full border-4 border-accent/30"
-                style={{ transform: "translateZ(50px)" }} // Pull image forward
+                style={{ transform: "translateZ(50px)" }}
               />
             </motion.div>
           </motion.div>
