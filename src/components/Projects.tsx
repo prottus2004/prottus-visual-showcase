@@ -1,8 +1,8 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useInView } from "framer-motion";
-import React, { useRef, useState } from "react"; // Import useState
-import { Eye, Brain, Shield, Play } from "lucide-react"; // Import Play icon
-import { Dialog, DialogContent } from "@/components/ui/dialog"; // Import Dialog
+import React, { useRef, useState } from "react";
+import { Eye, Brain, Shield, Play, ExternalLink } from "lucide-react"; // Import Play and ExternalLink
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 // --- Reusable Card Interaction Logic (Unchanged) ---
 const useCardInteraction = () => {
@@ -64,9 +64,10 @@ const cardVariants = {
 };
 
 // --- Project Card Component (Modified) ---
-// We add two new props: `onViewDetails` and `hasVideo`
-const ProjectCard = ({ project, onViewDetails, hasVideo }) => {
+// Now accepts `project` and `onShowModal`
+const ProjectCard = ({ project, onShowModal }) => {
   const interaction = useCardInteraction();
+  const hasVideo = !!project.videoUrl;
   
   return (
     <motion.div
@@ -77,12 +78,11 @@ const ProjectCard = ({ project, onViewDetails, hasVideo }) => {
       onMouseLeave={interaction.handleMouseLeave}
     >
       <motion.div 
-        className="h-full w-full flex flex-col" // Added flex-col to push button to bottom
+        className="h-full w-full flex flex-col"
         style={interaction.style}
       >
         <div className={`h-2 bg-gradient-to-r ${project.gradient}`} />
         
-        {/* Added flex-1 and flex-col to make content fill space */}
         <div className="p-6 space-y-4 flex-1 flex flex-col"> 
           <motion.div 
             className={`w-14 h-14 rounded-xl bg-gradient-to-br ${project.gradient} p-3 group-hover:scale-110 transition-transform`}
@@ -103,7 +103,7 @@ const ProjectCard = ({ project, onViewDetails, hasVideo }) => {
             {project.description}
           </p>
 
-          <div className="flex-grow" /> {/* Spacer to push content down */}
+          <div className="flex-grow" /> 
 
           <div className="flex flex-wrap gap-2 pt-4" style={{ transform: "translateZ(40px)" }}>
             {project.technologies.map((tech, techIndex) => (
@@ -116,17 +116,35 @@ const ProjectCard = ({ project, onViewDetails, hasVideo }) => {
             ))}
           </div>
 
+          {/* === MODIFIED BUTTON LOGIC === */}
           <motion.button
             className="w-full mt-4 py-2 glass rounded-lg flex items-center justify-center gap-2 group/btn disabled:opacity-40 disabled:cursor-not-allowed"
             whileHover={hasVideo ? { scale: 1.02 } : {}}
             whileTap={hasVideo ? { scale: 0.98 } : {}}
             style={{ transform: "translateZ(20px)" }}
-            onClick={onViewDetails} // Trigger the function from props
-            disabled={!hasVideo} // Disable button if no video
+            onClick={() => {
+              if (!hasVideo) return;
+              if (project.embeddable) {
+                // If embeddable, open modal
+                onShowModal(project.videoUrl);
+              } else {
+                // If not embeddable (LinkedIn), open in new tab
+                window.open(project.videoUrl, '_blank', 'noopener,noreferrer');
+              }
+            }}
+            disabled={!hasVideo}
           >
             <span>{hasVideo ? "View Demo" : "Details"}</span>
-            {hasVideo && <Play size={16} className="group-hover/btn:translate-x-1 transition-transform" />}
+            {/* Conditionally show Play or ExternalLink icon */}
+            {hasVideo && (
+              project.embeddable ? (
+                <Play size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+              ) : (
+                <ExternalLink size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+              )
+            )}
           </motion.button>
+          {/* === END MODIFICATION === */}
         </div>
       </motion.div>
     </motion.div>
@@ -137,10 +155,9 @@ const ProjectCard = ({ project, onViewDetails, hasVideo }) => {
 export const Projects = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  // Add state to track the active video URL
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
+  // === MODIFIED PROJECTS ARRAY ===
   const projects = [
     {
       icon: Eye,
@@ -149,8 +166,9 @@ export const Projects = () => {
       description: "A Real-time Image Captioning and Segmentation Model with Object Detection using stacked architecture with  different models working simultaneously to caption, segment instances, detect objects and identify and provide output.",
       technologies: ["CNN + LSTM","U-Net","Various edge detection algorithms", "Mask R-CNN","Faster R-CNN", "Python", "PyTorch", "OpenCV", "Streamlit"],
       gradient: "from-blue-500 to-purple-500",
-      // Embeddable LinkedIn URL
-      videoUrl: "https://www.linkedin.com/embed/feed/update/urn:li:activity:7347253949453819904",
+      // Regular LinkedIn share link
+      videoUrl: "https://www.linkedin.com/posts/prottus-manna-6b39b2268_visionaisuit-ai-cnn-activity-7347253949453819904-_06z",
+      embeddable: false, // Set to false
     },
     {
       icon: Shield,
@@ -159,8 +177,9 @@ export const Projects = () => {
       description: "ML Powered AI Based Fraud Detection System with high accuracy and real-time fraud transaction alerts. Features dashboard, email alerts, and weekly self-retraining.",
       technologies: ["Supervised ML", "Unsupervised ML", "Graph Models", "React", "Email API","Kafka"],
       gradient: "from-red-500 to-pink-500",
-      // Embeddable Google Drive URL
-      videoUrl: "https://drive.google.com/file/d/1bkOfZUWhVQg563-N316FH7ZTb5fGHV9o/preview?autoplay=1",
+      // Correct Google Drive embed link
+      videoUrl: "https://drive.google.com/file/d/1bkOfZUWhVQg563-N316FH7ZTb5fGHV9o/preview",
+      embeddable: true, // Set to true
     },
     {
       icon: Brain,
@@ -169,9 +188,11 @@ export const Projects = () => {
       description: "AI Powered PC Voice Assistant with ability to understand user intent, open/close apps, and perform PC tasks through voice commands. More advanced than Siri and Bixby.",
       technologies: ["TTS", "STT", "Automation", "Gemini API", "Python", "Ollama Models"],
       gradient: "from-green-500 to-cyan-500",
-      videoUrl: null, // No video for this one
+      videoUrl: null,
+      embeddable: false, // Set to false
     },
   ];
+  // === END MODIFICATION ===
 
   return (
     <section id="projects" className="py-20 relative" ref={ref}>
@@ -196,19 +217,18 @@ export const Projects = () => {
             <ProjectCard 
               key={index}
               project={project}
-              hasVideo={!!project.videoUrl}
-              onViewDetails={() => project.videoUrl && setActiveVideo(project.videoUrl)}
+              onShowModal={setActiveVideo} // Pass the modal setter
             />
           ))}
         </motion.div>
       </div>
 
-      {/* === VIDEO DIALOG (MODAL) === */}
+      {/* Video Dialog (Modal) */}
       <Dialog 
-        open={!!activeVideo} // Show dialog if activeVideo is not null
+        open={!!activeVideo}
         onOpenChange={(isOpen) => {
           if (!isOpen) {
-            setActiveVideo(null); // Close dialog and reset state
+            setActiveVideo(null);
           }
         }}
       >
@@ -217,6 +237,8 @@ export const Projects = () => {
             src={activeVideo || ""}
             className="w-full h-full rounded-lg"
             frameBorder="0"
+            // Added sandbox for better security and to help with Google Drive
+            sandbox="allow-scripts allow-same-origin allow-presentation"
             allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
             allowFullScreen
           ></iframe>
