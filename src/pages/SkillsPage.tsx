@@ -1,13 +1,13 @@
 import { Background3D } from "@/components/Background3D";
 import { Navigation } from "@/components/Navigation";
 import { Skills } from "@/components/Skills";
-import { motion } from "framer-motion"; // Import motion
+import { motion } from "framer-motion";
 
-// Define reusable animation variants
+// New Variants: Scale/Zoom in
 const pageVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "anticipate" } },
-  exit: { opacity: 0, y: -20, transition: { duration: 0.3, ease: "anticipate" } },
+  initial: { opacity: 0, scale: 0.95 },
+  animate: { opacity: 1, scale: 1, transition: { duration: 0.4, ease: "anticipate" } },
+  exit: { opacity: 0, scale: 0.95, transition: { duration: 0.3, ease: "easeOut" } },
 };
 
 const SkillsPage = () => {
