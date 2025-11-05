@@ -1,21 +1,16 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"; // Import new hooks
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useInView } from "framer-motion";
-import React, { useRef } from "react"; // Import React
+import React, { useRef } from "react";
 import { Eye, Brain, Shield, ExternalLink } from "lucide-react";
 
-// --- Reusable Card Interaction Logic ---
-// We create this hook once and reuse it for each card
+// --- Reusable Card Interaction Logic (Unchanged) ---
 const useCardInteraction = () => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-
   const mouseXSpring = useSpring(x, { stiffness: 100, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 100, damping: 30 });
-
-  // Smaller tilt angle for cards
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["8deg", "-8deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-8deg", "8deg"]);
-
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const width = rect.width;
@@ -27,12 +22,10 @@ const useCardInteraction = () => {
     x.set(xPct);
     y.set(yPct);
   };
-
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
   };
-
   return {
     handleMouseMove,
     handleMouseLeave,
@@ -41,32 +34,46 @@ const useCardInteraction = () => {
       rotateY,
       transformStyle: "preserve-3d",
     },
-    // Set perspective on the card's parent
     parentStyle: {
       perspective: "1000px",
     },
   };
 };
 
+// --- New Variants ---
+const gridVariants = {
+  hidden: { opacity: 1 }, // Keep container visible
+  visible: {
+    opacity: 1,
+    transition: {
+      delayChildren: 0.2,
+      staggerChildren: 0.2, // Stagger each card
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 50, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: "spring", stiffness: 100, damping: 15 },
+  },
+};
+
 // --- Project Card Component ---
-// We create a sub-component to easily apply the hook
-const ProjectCard = ({ project, isInView, index }) => {
+const ProjectCard = ({ project }) => {
   const interaction = useCardInteraction();
   
   return (
     <motion.div
-      key={index}
-      initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.2 }}
+      variants={cardVariants} // Use the new card variants
       className="glass rounded-2xl overflow-hidden group"
-      // Apply perspective to the card itself
       style={interaction.parentStyle}
-      // Apply mouse events
       onMouseMove={interaction.handleMouseMove}
       onMouseLeave={interaction.handleMouseLeave}
     >
-      {/* Apply the tilt style to an inner div */}
       <motion.div 
         className="h-full w-full"
         style={interaction.style}
@@ -74,7 +81,6 @@ const ProjectCard = ({ project, isInView, index }) => {
         <div className={`h-2 bg-gradient-to-r ${project.gradient}`} />
         
         <div className="p-6 space-y-4">
-          {/* We can "pop" elements out by adding translateZ */}
           <motion.div 
             className={`w-14 h-14 rounded-xl bg-gradient-to-br ${project.gradient} p-3 group-hover:scale-110 transition-transform`}
             style={{ transform: "translateZ(50px)" }}
@@ -126,6 +132,7 @@ export const Projects = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   const projects = [
+    // ... (Your projects data is unchanged)
     {
       icon: Eye,
       title: "Vision AI Suit",
@@ -165,16 +172,19 @@ export const Projects = () => {
           <p className="text-xl text-foreground/70">Showcasing my best work in AI & ML</p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          variants={gridVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+        >
           {projects.map((project, index) => (
             <ProjectCard 
-              key={index} 
+              key={index}
               project={project} 
-              isInView={isInView} 
-              index={index} 
             />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
