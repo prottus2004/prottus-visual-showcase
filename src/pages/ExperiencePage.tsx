@@ -1,13 +1,13 @@
 import { Background3D } from "@/components/Background3D";
 import { Navigation } from "@/components/Navigation";
 import { Experience } from "@/components/Experience";
-import { motion } from "framer-motion"; // Import motion
+import { motion } from "framer-motion";
 
-// Define reusable animation variants
+// New Variants: Slide in from right
 const pageVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "anticipate" } },
-  exit: { opacity: 0, y: -20, transition: { duration: 0.3, ease: "anticipate" } },
+  initial: { opacity: 0, x: 50 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "anticipate" } },
+  exit: { opacity: 0, x: -50, transition: { duration: 0.3, ease: "easeOut" } },
 };
 
 const ExperiencePage = () => {
