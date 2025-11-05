@@ -258,6 +258,7 @@ export const Projects = () => {
           </DialogClose>
         
           <div className="relative w-full h-96">
+            {/* 3D Background */}
             <div className="absolute inset-0 z-0 opacity-40">
               <Canvas camera={{ position: [0, 0, 1], fov: 45 }}>
                 <ambientLight intensity={1} />
@@ -272,6 +273,7 @@ export const Projects = () => {
                 />
               </Canvas>
             </div>
+            {/* Text Content */}
             <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-6">
               <motion.h2 
                 className="text-4xl font-bold gradient-text mb-4"
