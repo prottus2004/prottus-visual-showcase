@@ -1,8 +1,126 @@
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"; // Import new hooks
 import { useInView } from "framer-motion";
-import { useRef } from "react";
+import React, { useRef } from "react"; // Import React
 import { Eye, Brain, Shield, ExternalLink } from "lucide-react";
 
+// --- Reusable Card Interaction Logic ---
+// We create this hook once and reuse it for each card
+const useCardInteraction = () => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x, { stiffness: 100, damping: 30 });
+  const mouseYSpring = useSpring(y, { stiffness: 100, damping: 30 });
+
+  // Smaller tilt angle for cards
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["8deg", "-8deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-8deg", "8deg"]);
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return {
+    handleMouseMove,
+    handleMouseLeave,
+    style: {
+      rotateX,
+      rotateY,
+      transformStyle: "preserve-3d",
+    },
+    // Set perspective on the card's parent
+    parentStyle: {
+      perspective: "1000px",
+    },
+  };
+};
+
+// --- Project Card Component ---
+// We create a sub-component to easily apply the hook
+const ProjectCard = ({ project, isInView, index }) => {
+  const interaction = useCardInteraction();
+  
+  return (
+    <motion.div
+      key={index}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay: index * 0.2 }}
+      className="glass rounded-2xl overflow-hidden group"
+      // Apply perspective to the card itself
+      style={interaction.parentStyle}
+      // Apply mouse events
+      onMouseMove={interaction.handleMouseMove}
+      onMouseLeave={interaction.handleMouseLeave}
+    >
+      {/* Apply the tilt style to an inner div */}
+      <motion.div 
+        className="h-full w-full"
+        style={interaction.style}
+      >
+        <div className={`h-2 bg-gradient-to-r ${project.gradient}`} />
+        
+        <div className="p-6 space-y-4">
+          {/* We can "pop" elements out by adding translateZ */}
+          <motion.div 
+            className={`w-14 h-14 rounded-xl bg-gradient-to-br ${project.gradient} p-3 group-hover:scale-110 transition-transform`}
+            style={{ transform: "translateZ(50px)" }}
+          >
+            <project.icon className="text-white" size={32} />
+          </motion.div>
+
+          <div style={{ transform: "translateZ(30px)" }}>
+            <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
+            <p className="text-sm text-accent">{project.period}</p>
+          </div>
+
+          <p 
+            className="text-foreground/70 leading-relaxed"
+            style={{ transform: "translateZ(20px)" }}
+          >
+            {project.description}
+          </p>
+
+          <div className="flex flex-wrap gap-2" style={{ transform: "translateZ(40px)" }}>
+            {project.technologies.map((tech, techIndex) => (
+              <span
+                key={techIndex}
+                className="px-3 py-1 bg-primary/20 rounded-full text-xs border border-accent/20"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          <motion.button
+            className="w-full mt-4 py-2 glass rounded-lg flex items-center justify-center gap-2 group/btn"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            style={{ transform: "translateZ(20px)" }}
+          >
+            <span>View Details</span>
+            <ExternalLink size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+          </motion.button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// --- Main Projects Component ---
 export const Projects = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -49,51 +167,12 @@ export const Projects = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              className="glass rounded-2xl overflow-hidden group"
-              whileHover={{ y: -10 }}
-            >
-              <div className={`h-2 bg-gradient-to-r ${project.gradient}`} />
-              
-              <div className="p-6 space-y-4">
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${project.gradient} p-3 group-hover:scale-110 transition-transform`}>
-                  <project.icon className="text-white" size={32} />
-                </div>
-
-                <div>
-                  <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
-                  <p className="text-sm text-accent">{project.period}</p>
-                </div>
-
-                <p className="text-foreground/70 leading-relaxed">
-                  {project.description}
-                </p>
-
-                <div className="flex flex-wrap gap-2">
-                  {project.technologies.map((tech, techIndex) => (
-                    <span
-                      key={techIndex}
-                      className="px-3 py-1 bg-primary/20 rounded-full text-xs border border-accent/20"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                <motion.button
-                  className="w-full mt-4 py-2 glass rounded-lg flex items-center justify-center gap-2 group/btn"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <span>View Details</span>
-                  <ExternalLink size={16} className="group-hover/btn:translate-x-1 transition-transform" />
-                </motion.button>
-              </div>
-            </motion.div>
+            <ProjectCard 
+              key={index} 
+              project={project} 
+              isInView={isInView} 
+              index={index} 
+            />
           ))}
         </div>
       </div>
