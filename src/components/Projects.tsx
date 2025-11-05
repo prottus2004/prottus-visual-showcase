@@ -1,10 +1,10 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useInView } from "framer-motion";
 import React, { useRef, useState } from "react";
-import { Eye, Brain, Shield, Play, ExternalLink } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Canvas } from "@react-three/fiber"; // Import Canvas for 3D modal
-import { Stars, OrbitControls } from "@react-three/drei"; // Import Stars and OrbitControls
+import { Eye, Brain, Shield, Play, ExternalLink, ArrowLeft } from "lucide-react"; // Import ArrowLeft
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog"; // Import DialogClose
+import { Canvas } from "@react-three/fiber";
+import { Stars, OrbitControls } from "@react-three/drei";
 
 // --- Reusable Card Interaction Logic (Unchanged) ---
 const useCardInteraction = () => {
@@ -65,8 +65,7 @@ const cardVariants = {
   },
 };
 
-// --- Project Card Component (Modified) ---
-// Now accepts `onShowModal` and `onShowComingSoon`
+// --- Project Card Component (Unchanged) ---
 const ProjectCard = ({ project, onShowModal, onShowComingSoon }) => {
   const interaction = useCardInteraction();
   const hasLink = !!project.videoUrl;
@@ -119,7 +118,6 @@ const ProjectCard = ({ project, onShowModal, onShowComingSoon }) => {
             ))}
           </div>
 
-          {/* === MODIFIED BUTTON LOGIC === */}
           <motion.button
             className="w-full mt-4 py-2 glass rounded-lg flex items-center justify-center gap-2 group/btn disabled:opacity-40 disabled:cursor-not-allowed"
             whileHover={(hasLink || isComingSoon) ? { scale: 1.02 } : {}}
@@ -127,12 +125,12 @@ const ProjectCard = ({ project, onShowModal, onShowComingSoon }) => {
             style={{ transform: "translateZ(20px)" }}
             onClick={() => {
               if (isComingSoon) {
-                onShowComingSoon(); // Open Coming Soon modal
+                onShowComingSoon();
               } else if (hasLink) {
                 if (project.embeddable) {
-                  onShowModal(project.videoUrl); // Open video modal
+                  onShowModal(project.videoUrl);
                 } else {
-                  window.open(project.videoUrl, '_blank', 'noopener,noreferrer'); // Open new tab
+                  window.open(project.videoUrl, '_blank', 'noopener,noreferrer');
                 }
               }
             }}
@@ -140,18 +138,15 @@ const ProjectCard = ({ project, onShowModal, onShowComingSoon }) => {
           >
             <span>{(hasLink || isComingSoon) ? "View Demo" : "Details"}</span>
             
-            {/* Show Play icon for embeddable video OR coming soon */}
             {(hasLink && project.embeddable) || isComingSoon ? (
               <Play size={16} className="group-hover/btn:translate-x-1 transition-transform" />
             ) : null}
 
-            {/* Show ExternalLink icon for non-embeddable link */}
             {hasLink && !project.embeddable ? (
               <ExternalLink size={16} className="group-hover/btn:translate-x-1 transition-transform" />
             ) : null}
             
           </motion.button>
-          {/* === END MODIFICATION === */}
         </div>
       </motion.div>
     </motion.div>
@@ -163,9 +158,8 @@ export const Projects = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
-  const [isComingSoonOpen, setIsComingSoonOpen] = useState(false); // New state
+  const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
 
-  // === MODIFIED PROJECTS ARRAY ===
   const projects = [
     {
       icon: Eye,
@@ -176,7 +170,7 @@ export const Projects = () => {
       gradient: "from-blue-500 to-purple-500",
       videoUrl: "https://www.linkedin.com/posts/prottus-manna-6b39b2268_visionaisuit-ai-cnn-activity-7347253949453819904-_06z",
       embeddable: false,
-      comingSoon: false, // Added this
+      comingSoon: false,
     },
     {
       icon: Shield,
@@ -198,10 +192,9 @@ export const Projects = () => {
       gradient: "from-green-500 to-cyan-500",
       videoUrl: null,
       embeddable: false,
-      comingSoon: true, // Set to true
+      comingSoon: true,
     },
   ];
-  // === END MODIFICATION ===
 
   return (
     <section id="projects" className="py-20 relative" ref={ref}>
@@ -227,7 +220,7 @@ export const Projects = () => {
               key={index}
               project={project}
               onShowModal={setActiveVideo}
-              onShowComingSoon={() => setIsComingSoonOpen(true)} // Pass new handler
+              onShowComingSoon={() => setIsComingSoonOpen(true)}
             />
           ))}
         </motion.div>
@@ -254,11 +247,17 @@ export const Projects = () => {
         </DialogContent>
       </Dialog>
 
-      {/* === NEW COMING SOON DIALOG === */}
+      {/* === MODIFIED COMING SOON DIALOG === */}
       <Dialog open={isComingSoonOpen} onOpenChange={setIsComingSoonOpen}>
         <DialogContent className="glass p-0 border-accent/20 bg-background/80 max-w-lg w-full rounded-lg overflow-hidden backdrop-blur-md">
+          
+          {/* Manually added close button */}
+          <DialogClose className="absolute right-4 top-4 z-20 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-accent data-[state=open]:text-muted-foreground hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
+            <ArrowLeft className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogClose>
+        
           <div className="relative w-full h-96">
-            {/* 3D Background for the modal */}
             <div className="absolute inset-0 z-0 opacity-40">
               <Canvas camera={{ position: [0, 0, 1], fov: 45 }}>
                 <ambientLight intensity={1} />
@@ -273,7 +272,6 @@ export const Projects = () => {
                 />
               </Canvas>
             </div>
-            {/* Text Content */}
             <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-6">
               <motion.h2 
                 className="text-4xl font-bold gradient-text mb-4"
