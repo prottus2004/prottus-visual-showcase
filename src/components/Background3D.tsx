@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Stars, TorusKnot } from "@react-three/drei"; // Import new components
-import { Mesh } from "three";
+import { OrbitControls, Stars, TorusKnot } from "@react-three/drei";
+import { Mesh, MeshStandardMaterial } from "three"; // Import MeshStandardMaterial here
 
 function AnimatedObject() {
   const meshRef = useRef<Mesh>(null);
@@ -18,7 +18,7 @@ function AnimatedObject() {
     // Use a more complex shape
     <TorusKnot ref={meshRef} args={[1, 0.3, 100, 16]} scale={1.5}>
       {/* Use MeshStandardMaterial for realistic lighting */}
-      <MeshStandardMaterial
+      <meshStandardMaterial
         color="#7c3aed"
         roughness={0.1}
         metalness={0.6}
