@@ -12,12 +12,11 @@ export const PageShape = ({ shape }: { shape: 'sphere' | 'box' | 'torus' | 'dode
   // Animate the shape on every frame
   useFrame((state, delta) => {
     if (meshRef.current) {
-      // Gentle constant rotation
-      meshRef.current.rotation.x += delta * 0.1;
-      meshRef.current.rotation.y += delta * 0.2;
+      // Gentle constant rotation (Increased speeds)
+      meshRef.current.rotation.x += delta * 0.2;
+      meshRef.current.rotation.y += delta * 0.3;
 
       // Make rotation follow scroll
-      // The `scroll.offset` is a value from 0 (top) to 1 (bottom)
       meshRef.current.rotation.z = THREE.MathUtils.lerp(
         meshRef.current.rotation.z, // from
         scroll.offset * Math.PI * 1.5, // to
