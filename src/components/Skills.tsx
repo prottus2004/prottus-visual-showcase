@@ -29,7 +29,7 @@ export const Skills = () => {
     {
       icon: Brain,
       title: "AI & ML",
-      skills: ["LLMs", "Ollama", "CNN + LSTM", "U-Net", "Gemini API"],
+      skills: ["LLMs", "Ollama", "CNN ","LSTM","Transformers","Supervised and Unsupervised learning Models","U-Net", "APIs"],
       color: "from-orange-500 to-red-500",
     },
   ];
