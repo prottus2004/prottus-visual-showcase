@@ -89,14 +89,6 @@ export const Hero = () => {
             </motion.div>
           </motion.div>
         </div>
-
-        <motion.div
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <ArrowDown className="text-accent" size={32} />
-        </motion.div>
       </div>
     </section>
   );
