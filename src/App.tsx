@@ -3,7 +3,11 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { AnimatePresence } from "framer-motion"; // Import AnimatePresence
+import { AnimatePresence } from "framer-motion";
+import React, { useState, useEffect } from "react"; // Import useState and useEffect
+import { Welcome } from "@/components/Welcome"; // Import the Welcome component
+
+// Import Pages
 import Index from "./pages/Index";
 import AboutPage from "./pages/AboutPage";
 import SkillsPage from "./pages/SkillsPage";
@@ -14,11 +18,10 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-// Create a new component to hold the animated routes
+// This component remains the same as before
 const AnimatedRoutes = () => {
   const location = useLocation();
   return (
-    // Set mode="wait" to ensure exit animations finish before new page enters
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Index />} />
@@ -34,17 +37,51 @@ const AnimatedRoutes = () => {
   );
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        {/* Use the new AnimatedRoutes component */}
-        <AnimatedRoutes />
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  // State to manage if we're checking for the visit, and if we should show the welcome screen
+  const [isCheckingVisit, setIsCheckingVisit] = useState(true);
+  const [showWelcomeScreen, setShowWelcomeScreen] = useState(false);
+
+  useEffect(() => {
+    // Check localStorage on mount
+    const hasVisited = localStorage.getItem("hasVisited");
+    if (!hasVisited) {
+      // If user hasn't visited, show the welcome screen
+      setShowWelcomeScreen(true);
+    }
+    // Finished checking
+    setIsCheckingVisit(false);
+  }, []); // Empty dependency array means this runs once on mount
+
+  const handleWelcomeFinished = () => {
+    // Set the flag in localStorage so it doesn't show again
+    localStorage.setItem("hasVisited", "true");
+    // Hide the welcome screen
+    setShowWelcomeScreen(false);
+  };
+
+  // While checking, we can show a blank screen or a minimal loader
+  if (isCheckingVisit) {
+    return null; // Or a loading spinner
+  }
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        
+        {/* Conditional Rendering */}
+        {showWelcomeScreen ? (
+          <Welcome onFinished={handleWelcomeFinished} />
+        ) : (
+          <BrowserRouter>
+            <AnimatedRoutes />
+          </BrowserRouter>
+        )}
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
