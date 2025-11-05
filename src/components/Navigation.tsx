@@ -31,22 +31,37 @@ export const Navigation = () => {
             </motion.h1>
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item, index) => (
-              <Link key={item.name} to={item.path}>
-                <motion.div
-                  className={`text-foreground/80 hover:text-foreground transition-colors ${
-                    location.pathname === item.path ? "text-accent font-semibold" : ""
-                  }`}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.1 }}
-                >
-                  {item.name}
-                </motion.div>
-              </Link>
-            ))}
+          {/* Add relative positioning to the container */}
+          <div className="hidden md:flex items-center gap-8 relative">
+            {navItems.map((item, index) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link key={item.name} to={item.path}>
+                  <motion.div
+                    // Add relative positioning to each item
+                    className={`relative px-1 py-1 text-foreground/80 hover:text-foreground transition-colors ${
+                      isActive ? "text-accent font-semibold" : ""
+                    }`}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    {item.name}
+                    
+                    {/* This is the magic underline */}
+                    {isActive && (
+                      <motion.div
+                        className="absolute bottom-[-5px] left-0 right-0 h-0.5 bg-accent"
+                        layoutId="active-nav-link" // This makes it slide
+                        initial={false}
+                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                      />
+                    )}
+                  </motion.div>
+                </Link>
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-4">
