@@ -1,40 +1,35 @@
 import { useRef } from 'react';
-import { useFrame } from '@react-three-fiber';
+import { useFrame } from '@react-three/fiber';
 import { useScroll, Box, Sphere, Torus, Dodecahedron } from '@react-three/drei';
 import { Mesh } from 'three';
 import * as THREE from 'three';
 
-// This component renders a shape and links its animation to scroll progress
+// This component renders a shape and links its rotation to scroll progress
 export const PageShape = ({ shape }: { shape: 'sphere' | 'box' | 'torus' | 'dodecahedron' }) => {
   const meshRef = useRef<Mesh>(null!);
   const scroll = useScroll(); // Hook to get scroll data
 
+  // Animate the shape on every frame
   useFrame((state, delta) => {
     if (meshRef.current) {
       // Gentle constant rotation
       meshRef.current.rotation.x += delta * 0.2;
       meshRef.current.rotation.y += delta * 0.3;
 
-      // --- New Scroll Animation ---
-      // scroll.offset goes from 0 (top) to 1 (bottom)
+      // Make rotation follow scroll
+      meshRef.current.rotation.z = THREE.MathUtils.lerp(
+        meshRef.current.rotation.z, // from
+        scroll.offset * Math.PI * 1.5, // to
+        0.05 // smooth factor
+      );
 
-      // 1. Move the shape up as user scrolls
-      // It starts at y=1.5 and moves up to y=4
+      // --- CHANGED THIS LINE ---
+      // Make position move slightly up with scroll (from 0 to -2)
       meshRef.current.position.y = THREE.MathUtils.lerp(
-        1.5, // Start position
-        4,   // End position
-        scroll.offset
+        meshRef.current.position.y,
+        scroll.offset * -2, // Animate from y=0 to y=-2
+        0.05
       );
-
-      // 2. Shrink the shape as user scrolls
-      // It starts at scale=1 and shrinks to scale=0
-      const scale = THREE.MathUtils.lerp(
-        1,   // Start scale
-        0,   // End scale
-        scroll.offset
-      );
-      meshRef.current.scale.set(scale, scale, scale);
-      // --- End New Scroll Animation ---
     }
   });
 
@@ -44,8 +39,6 @@ export const PageShape = ({ shape }: { shape: 'sphere' | 'box' | 'torus' | 'dode
       color="#7c3aed"
       roughness={0.1}
       metalness={0.6}
-      transparent // Needed to allow fading, though we animate scale now
-      opacity={1}
     />
   );
 
@@ -65,6 +58,7 @@ export const PageShape = ({ shape }: { shape: 'sphere' | 'box' | 'torus' | 'dode
     }
   };
 
-  // Set the starting position to be centered (x=0) and slightly up (y=1.5)
-  return <group position={[0, 1.5, 0]}>{renderShape()}</group>;
+  // --- CHANGED THIS LINE ---
+  // Set the group position to [0, 0, 0] for the exact center
+  return <group position={[0, 0, 0]}>{renderShape()}</group>;
 };
