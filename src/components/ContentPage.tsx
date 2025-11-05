@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import { Canvas } from "@react-three/fiber";
-import { Stars, ScrollControls, OrbitControls } from "@react-three/drei"; // Import OrbitControls
+import { Stars, ScrollControls, Scroll } from "@react-three/drei"; // Import <Scroll>
 import { Navigation } from "@/components/Navigation";
 import { PageShape } from "@/components/PageShape";
 import React from "react";
 
-// New 3D page transition variants
+// Page transition variants
 const pageVariants = {
   initial: { opacity: 0, rotateX: -90, y: 100 },
   animate: {
@@ -30,44 +30,44 @@ interface ContentPageProps {
 export const ContentPage = ({ children, shape }: ContentPageProps) => {
   return (
     <motion.div
-      className="relative min-h-screen"
-      style={{ perspective: "1000px" }} // Enable 3D perspective for transitions
+      className="relative h-screen w-screen overflow-hidden" // Use h-screen and w-screen
+      style={{ perspective: "1000px" }}
       initial="initial"
       animate="animate"
       exit="exit"
       variants={pageVariants}
     >
       {/* 3D Scene Background */}
-      <div className="fixed inset-0 -z-10">
-        <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-          <ambientLight intensity={0.5} />
-          <directionalLight position={[10, 10, 5]} intensity={1.5} />
-          <pointLight position={[-10, -10, -10]} intensity={1} color="#22d3ee" />
-          <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+      <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} intensity={1.5} />
+        <pointLight position={[-10, -10, -10]} intensity={1} color="#22d3ee" />
+        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+        
+        {/* ScrollControls links the 3D shape to the 2D <Scroll> component */}
+        {/* We'll set pages to 3 to give ample scroll room for the effect */}
+        <ScrollControls pages={3} damping={0.25}>
+          {/* 3D Shape */}
+          <PageShape shape={shape} />
           
-          {/* === ADDED THIS SECTION === */}
-          {/* This makes the entire scene auto-rotate, creating the "lively" feel */}
-          <OrbitControls 
-            enableZoom={false} 
-            enablePan={false} 
-            autoRotate 
-            autoRotateSpeed={0.5} 
-            minPolarAngle={Math.PI / 2}
-            maxPolarAngle={Math.PI / 2}
-          />
-          {/* === END ADDED SECTION === */}
-
-          <ScrollControls pages={2} damping={0.25}>
-            <PageShape shape={shape} />
-          </ScrollControls>
-        </Canvas>
-      </div>
-
-      {/* Navigation */}
-      <Navigation />
+          {/* 2D HTML Content */}
+          <Scroll html>
+            {/* This div creates the space for the 3D object at the top */}
+            <div style={{ paddingTop: '100vh' }}>
+              <main className="relative z-10 bg-background pt-20">
+                {children}
+                {/* Footer to add scroll length */}
+                <footer className="py-16 text-center text-foreground/60 border-t border-accent/20">
+                  <p>© 2025 Prottus Manna. Crafted with passion and precision.</p>
+                </footer>
+              </main>
+            </div>
+          </Scroll>
+        </ScrollControls>
+      </Canvas>
       
-      {/* 2D Page Content */}
-      <main className="pt-20">{children}</main>
+      {/* Navigation sits on top of the <Canvas> */}
+      <Navigation />
     </motion.div>
   );
 };
