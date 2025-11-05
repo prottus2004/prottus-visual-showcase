@@ -13,13 +13,13 @@ export const Experience = () => {
     period: "May 2025 - August 2025",
     location: "Remote",
     description: [
-      "Worked as a solo intern on three comprehensive Machine Learning projects",
+      "Worked as a solo intern on three comprehensive Data Science and Analytics Project with Machine Learning",
       "Gained expertise in using LLMs efficiently and developing new architectures",
       "Trained and evaluated model accuracy, created stacked ensembles",
       "Worked extensively with APIs and fine-tuned pre-existing model weights",
       "Achieved 83% score and recognized as the best intern",
     ],
-    skills: ["LLMs", "Model Training", "API Integration", "Model Evaluation", "Architecture Design"],
+    skills: ["LLMs", "Model Training", "API Integration", "Model Evaluation", "Architecture Design", "Supervised and Unsupervised Learining Models", "Graph Based Models" ],
   };
 
   return (
@@ -102,4 +102,3 @@ export const Experience = () => {
     </section>
   );
 };
-
