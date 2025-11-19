@@ -42,7 +42,7 @@ export const About = () => {
       year: "Expected Oct 2025",
     },
     {
-      degree: "XI (ISC)",
+      degree: "XII (ISC)",
       institution: "National Gems Higher Secondary School, Behala",
       grade: "76%",
       year: "2022",
