@@ -39,7 +39,7 @@ export const About = () => {
       degree: "B.Tech in Information Technology",
       institution: "Institute of Engineering and Management, Kolkata",
       grade: "SGPA: 8.01",
-      year: "Expected Oct 2025",
+      year: "Expected Oct 2026",
     },
     {
       degree: "XII (ISC)",
