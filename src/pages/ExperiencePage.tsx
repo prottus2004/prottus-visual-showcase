@@ -1,12 +1,10 @@
 import { Experience } from "@/components/Experience";
-import { ContentPage } from "@/components/ContentPage"; // Import new layout
+import { EraPage } from "@/components/EraPage";
 
-const ExperiencePage = () => {
-  return (
-    <ContentPage shape="dodecahedron"> {/* Pass in a shape */}
-      <Experience />
-    </ContentPage>
-  );
-};
+const ExperiencePage = () => (
+  <EraPage>
+    <Experience />
+  </EraPage>
+);
 
 export default ExperiencePage;

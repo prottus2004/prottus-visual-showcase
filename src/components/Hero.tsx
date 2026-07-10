@@ -1,154 +1,156 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowDown } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import profileImage from "@/assets/profile.jpeg";
-import React from "react";
-import { Link } from "react-router-dom"; // Import the Link component
+import { Link } from "react-router-dom";
+import { ERAS, PERSONA } from "@/data/chronicle";
+import { MagneticButton } from "@/components/MagneticButton";
+import { wordStagger, wordChild, lineStagger, fadeUp } from "@/lib/motion";
 
 export const Hero = () => {
-  // --- Start of interactive mouse-follow logic ---
+  // Mouse-driven 3D tilt / parallax for the portrait (kept from the Chronicle).
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-
-  // Spring animations for smooth, lagging effect
   const mouseXSpring = useSpring(x, { stiffness: 100, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 100, damping: 30 });
-
-  // Transform mouse position into a "tilt" rotation
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10.5deg", "-10.5deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10.5deg", "10.5deg"]);
-  
-  // Add a subtle parallax movement
-  const translateX = useTransform(mouseXSpring, [-0.5, 0.5], ["-15px", "15px"]);
-  const translateY = useTransform(mouseYSpring, [-0.5, 0.5], ["-15px", "15px"]);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+  const translateX = useTransform(mouseXSpring, [-0.5, 0.5], ["-18px", "18px"]);
+  const translateY = useTransform(mouseYSpring, [-0.5, 0.5], ["-18px", "18px"]);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    
-    // Calculate mouse position relative to the center of the element
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
-
-    // Normalize from -0.5 to 0.5
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
-
-    x.set(xPct);
-    y.set(yPct);
+    x.set((event.clientX - rect.left) / rect.width - 0.5);
+    y.set((event.clientY - rect.top) / rect.height - 0.5);
   };
-
   const handleMouseLeave = () => {
-    // Reset to center when mouse leaves
     x.set(0);
     y.set(0);
   };
-  // --- End of interactive logic ---
+
+  const era = ERAS.present;
+  const nameWords = PERSONA.name.split(" ");
 
   return (
-    // Add mouse move/leave handlers to the main section
-    <section 
-      className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20"
+    <section
+      className="relative flex min-h-screen items-center justify-center overflow-hidden pt-20"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-background to-background" />
-      
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-          
-          <motion.div
-            className="flex-1 space-y-6"
-            initial={{ opacity: 0, x: -100 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
+      <div className="container relative z-10 mx-auto px-6">
+        <div className="flex flex-col items-center justify-between gap-12 md:flex-row">
+          {/* Text */}
+          <motion.div className="flex-1 space-y-6">
             <motion.div
-              className="text-accent text-lg font-medium"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              className="glass-era chrono-mono inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-era"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              Hello, I'm
+              <Sparkles size={13} />
+              {era.chapter} · {era.year}
             </motion.div>
-            
-            <motion.h1
-              className="text-6xl md:text-8xl font-bold glow-text"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+
+            <motion.div
+              className="chrono-mono text-era text-lg font-medium"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              Prottus
-              <br />
-              <span className="gradient-text">Manna</span>
+              {era.tagline}
+            </motion.div>
+
+            {/* Staggered word-by-word name entrance (spec: staggered headline). */}
+            <motion.h1
+              variants={wordStagger}
+              initial="hidden"
+              animate="visible"
+              className="glow-text text-6xl font-bold leading-none md:text-8xl"
+            >
+              {nameWords.map((word, i) => (
+                <motion.span key={i} variants={wordChild} className="mr-4 inline-block">
+                  {i === nameWords.length - 1 ? <span className="gradient-text">{word}</span> : word}
+                </motion.span>
+              ))}
             </motion.h1>
 
             <motion.p
-              className="text-xl md:text-2xl text-foreground/70"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              Full Stack Developer & AI Enthusiast
-            </motion.p>
-
-            <motion.div
-              className="flex gap-4"
+              className="text-xl text-foreground/70 md:text-2xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
             >
-              {/* === FIX: Replaced <motion.a> with <Link> and <motion.div> === */}
-              <Link to="/contact">
-                <motion.div
-                  className="px-8 py-3 bg-gradient-to-r from-primary to-accent rounded-full text-white font-medium cursor-pointer" // Added cursor-pointer
-                  whileHover={{ scale: 1.05, boxShadow: "0 0 30px hsl(var(--primary) / 0.5)" }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Get In Touch
-                </motion.div>
-              </Link>
-              <Link to="/projects">
-                <motion.div
-                  className="px-8 py-3 glass rounded-full font-medium cursor-pointer" // Added cursor-pointer
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  View Projects
-                </motion.div>
-              </Link>
-              {/* === END FIX === */}
+              {PERSONA.role}
+            </motion.p>
+
+            <motion.p
+              className="max-w-lg text-foreground/55"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.75 }}
+            >
+              {era.narration}
+            </motion.p>
+
+            {/* Magnetic CTAs (spec: magnetic hover + scale/translate micro-interactions). */}
+            <motion.div
+              variants={lineStagger}
+              initial="hidden"
+              animate="visible"
+              className="flex flex-wrap gap-4"
+            >
+              <motion.div variants={fadeUp}>
+                <MagneticButton>
+                  <Link
+                    to="/contact"
+                    data-cursor
+                    className="inline-block rounded-full bg-gradient-to-r from-primary to-accent px-8 py-3 font-medium text-white transition-shadow hover:shadow-[0_0_30px_hsl(var(--primary)/0.5)]"
+                  >
+                    Transmit a Signal
+                  </Link>
+                </MagneticButton>
+              </motion.div>
+              <motion.div variants={fadeUp}>
+                <MagneticButton>
+                  <Link
+                    to="/projects"
+                    data-cursor
+                    className="glass inline-block rounded-full px-8 py-3 font-medium transition-colors hover:text-era"
+                  >
+                    View the Inventions
+                  </Link>
+                </MagneticButton>
+              </motion.div>
             </motion.div>
           </motion.div>
 
-          {/* Right side (image) */}
+          {/* Portrait */}
           <motion.div
-            className="flex-1 flex justify-center"
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            style={{ 
-              perspective: "1000px",
-              translateX,
-              translateY,
-            }}
+            className="flex flex-1 justify-center"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+            style={{ perspective: "1000px", translateX, translateY }}
           >
-            <motion.div
-              className="relative"
-              style={{
-                rotateX,
-                rotateY,
-                transformStyle: "preserve-3d",
-              }}
-            >
-              <div 
-                className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-full blur-3xl opacity-30"
-                style={{ transform: "translateZ(-50px)" }}
+            <motion.div className="relative" style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}>
+              <div
+                className="absolute inset-0 rounded-full opacity-40 blur-3xl"
+                style={{
+                  background: `radial-gradient(circle, hsl(${era.hue} 90% 60%), transparent 70%)`,
+                  transform: "translateZ(-50px)",
+                }}
+              />
+              {/* rotating orbit ring around the portrait */}
+              <motion.div
+                className="border-era/30 absolute -inset-6 rounded-full border"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                style={{ z: 20 }}
               />
               <img
                 src={profileImage}
-                alt="Prottus Manna"
-                className="relative w-80 h-80 object-cover rounded-full border-4 border-accent/30"
+                alt={PERSONA.name}
+                data-cursor
+                className="border-era/40 shadow-era relative h-80 w-80 rounded-full border-4 object-cover"
                 style={{ transform: "translateZ(50px)" }}
               />
             </motion.div>

@@ -1,12 +1,10 @@
 import { About } from "@/components/About";
-import { ContentPage } from "@/components/ContentPage"; // Import new layout
+import { EraPage } from "@/components/EraPage";
 
-const AboutPage = () => {
-  return (
-    <ContentPage shape="sphere"> {/* Pass in a shape */}
-      <About />
-    </ContentPage>
-  );
-};
+const AboutPage = () => (
+  <EraPage>
+    <About />
+  </EraPage>
+);
 
 export default AboutPage;

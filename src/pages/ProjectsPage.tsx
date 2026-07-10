@@ -1,12 +1,10 @@
 import { Projects } from "@/components/Projects";
-import { ContentPage } from "@/components/ContentPage"; // Import new layout
+import { EraPage } from "@/components/EraPage";
 
-const ProjectsPage = () => {
-  return (
-    <ContentPage shape="torus"> {/* Pass in a shape */}
-      <Projects />
-    </ContentPage>
-  );
-};
+const ProjectsPage = () => (
+  <EraPage>
+    <Projects />
+  </EraPage>
+);
 
 export default ProjectsPage;

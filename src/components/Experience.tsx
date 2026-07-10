@@ -1,106 +1,118 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Briefcase, Calendar, MapPin } from "lucide-react";
+import { Calendar, MapPin, Briefcase, Award, ExternalLink } from "lucide-react";
+import { EXPEDITIONS } from "@/data/chronicle";
 
 export const Experience = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const experience = {
-    // ... (Your experience data is unchanged)
-    company: "Zidio Developments",
-    role: "Machine Learning Intern",
-    period: "May 2025 - August 2025",
-    location: "Remote",
-    description: [
-      "Worked as a solo intern on three comprehensive Data Science and Analytics Project with Machine Learning",
-      "Gained expertise in using LLMs efficiently and developing new architectures",
-      "Trained and evaluated model accuracy, created stacked ensembles",
-      "Worked extensively with APIs and fine-tuned pre-existing model weights",
-      "Achieved 83% score and recognized as the best intern",
-    ],
-    skills: ["LLMs", "Model Training", "API Integration", "Model Evaluation", "Architecture Design", "Supervised and Unsupervised Learining Models", "Graph Based Models" ],
-  };
+  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section id="experience" className="py-20 relative" ref={ref}>
-      <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-5xl font-bold gradient-text mb-4">Work Experience</h2>
-          <p className="text-xl text-foreground/70">My professional journey</p>
-        </motion.div>
+    <div className="max-w-4xl mx-auto" ref={ref}>
+      <div className="relative pl-8 border-l-2 border-era/30">
+        {EXPEDITIONS.map((exp, i) => (
+          <motion.div
+            key={exp.org}
+            className="relative mb-10 last:mb-0"
+            initial={{ opacity: 0, x: -40 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ delay: 0.2 + i * 0.2, type: "spring", stiffness: 80, damping: 16 }}
+          >
+            {/* node */}
+            <motion.div
+              className="absolute -left-[2.6rem] top-0 w-6 h-6 rounded-full bg-era shadow-era flex items-center justify-center"
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+            >
+              <Briefcase size={12} className="text-background" />
+            </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, x: -100 }}
-          animate={isInView ? { opacity: 1, x: 0 } : {}}
-          // Replaced old transition with a spring
-          transition={{ type: "spring", stiffness: 80, damping: 15, delay: 0.2 }}
-          className="max-w-4xl mx-auto"
-        >
-          <div className="relative pl-8 border-l-2 border-accent/30">
-            <div className="absolute -left-3 top-0 w-6 h-6 bg-accent rounded-full animate-pulse" />
-            
-            <div className="glass rounded-2xl p-8 space-y-6">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="glass-era rounded-2xl p-8 space-y-5">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div>
-                  <h3 className="text-3xl font-bold text-accent mb-2">{experience.role}</h3>
-                  <h4 className="text-xl font-semibold">{experience.company}</h4>
+                  <h3 className="text-2xl font-bold text-era mb-1">{exp.role}</h3>
+                  <h4 className="text-lg font-semibold">{exp.org}</h4>
                 </div>
-                
-                <div className="flex flex-col gap-2 text-sm text-foreground/70">
+                <div className="flex flex-col gap-1.5 text-sm text-foreground/70 chrono-mono">
                   <div className="flex items-center gap-2">
-                    <Calendar size={16} />
-                    <span>{experience.period}</span>
+                    <Calendar size={15} />
+                    <span>{exp.period}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <MapPin size={16} />
-                    <span>{experience.location}</span>
+                    <MapPin size={15} />
+                    <span>{exp.location}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                {experience.description.map((item, index) => (
+              <p className="text-foreground/75 text-sm">{exp.summary}</p>
+
+              <div className="space-y-2.5">
+                {exp.details.map((d, j) => (
                   <motion.div
-                    key={index}
+                    key={j}
                     className="flex items-start gap-3"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={isInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ delay: 0.5 + index * 0.1 }}
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={inView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ delay: 0.4 + i * 0.2 + j * 0.08 }}
                   >
-                    <div className="w-2 h-2 bg-accent rounded-full mt-2 flex-shrink-0" />
-                    <p className="text-foreground/80">{item}</p>
+                    <div className="w-1.5 h-1.5 bg-era rounded-full mt-2 flex-shrink-0" />
+                    <p className="text-foreground/80 text-sm">{d}</p>
                   </motion.div>
                 ))}
               </div>
 
-              <div className="pt-4 border-t border-accent/20">
-                <p className="text-sm text-foreground/60 mb-3">Key Skills Developed:</p>
+              <div className="pt-4 border-t border-era/15">
+                <p className="text-xs text-foreground/50 mb-3 chrono-mono">capabilities gained</p>
                 <div className="flex flex-wrap gap-2">
-                  {experience.skills.map((skill, index) => (
+                  {exp.skills.map((s, k) => (
                     <motion.span
-                      key={index}
-                      className="px-4 py-2 bg-primary/20 rounded-full text-sm border border-accent/20"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                      transition={{ delay: 0.7 + index * 0.1 }}
-                      whileHover={{ scale: 1.1, borderColor: "hsl(var(--accent))" }}
+                      key={s}
+                      data-cursor
+                      className="px-3 py-1.5 bg-era-soft rounded-full text-xs border border-era/20"
+                      initial={{ opacity: 0, scale: 0.85 }}
+                      animate={inView ? { opacity: 1, scale: 1 } : {}}
+                      transition={{ delay: 0.6 + i * 0.2 + k * 0.05 }}
+                      whileHover={{ scale: 1.08 }}
                     >
-                      {skill}
+                      {s}
                     </motion.span>
                   ))}
                 </div>
               </div>
+
+              {exp.certificates && exp.certificates.length > 0 && (
+                <div className="pt-4 border-t border-era/15">
+                  <p className="text-xs text-foreground/50 mb-3 chrono-mono flex items-center gap-1.5">
+                    <Award size={12} className="text-era" />
+                    certificates
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {exp.certificates.map((cert) => (
+                      <motion.a
+                        key={cert.url}
+                        href={cert.url}
+                        target="_blank"
+                        rel="noopener,noreferrer"
+                        data-cursor
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-era-soft rounded-full text-xs border border-era/20 hover:border-era/60 hover:bg-era/10 transition-colors"
+                        initial={{ opacity: 0, scale: 0.85 }}
+                        animate={inView ? { opacity: 1, scale: 1 } : {}}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.97 }}
+                      >
+                        <span className="text-foreground/80">{cert.label}</span>
+                        <ExternalLink size={11} className="text-era" />
+                      </motion.a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        ))}
       </div>
-    </section>
+    </div>
   );
 };

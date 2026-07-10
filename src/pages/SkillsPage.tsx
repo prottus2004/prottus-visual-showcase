@@ -1,12 +1,10 @@
 import { Skills } from "@/components/Skills";
-import { ContentPage } from "@/components/ContentPage"; // Import new layout
+import { EraPage } from "@/components/EraPage";
 
-const SkillsPage = () => {
-  return (
-    <ContentPage shape="box"> {/* Pass in a shape */}
-      <Skills />
-    </ContentPage>
-  );
-};
+const SkillsPage = () => (
+  <EraPage>
+    <Skills />
+  </EraPage>
+);
 
 export default SkillsPage;

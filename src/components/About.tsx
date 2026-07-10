@@ -1,174 +1,158 @@
 import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
-import { GraduationCap, Award, Heart } from "lucide-react";
+import { GraduationCap, Award, Heart, MapPin } from "lucide-react";
+import profileImage from "@/assets/profile.jpeg";
+import { ACHIEVEMENTS, BIO, EDUCATION, HOBBIES, PERSONA } from "@/data/chronicle";
+import { fadeUp, staggerContainer, staggerFast, viewportOnce } from "@/lib/motion";
 
-// Variants for each card
-const cardVariantsLeft = {
-  hidden: { opacity: 0, x: -80 },
-  visible: { 
-    opacity: 1, 
-    x: 0, 
-    transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.2 } 
-  }
-};
-const cardVariantsBottom = {
-  hidden: { opacity: 0, y: 80 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.4 } 
-  }
-};
-const cardVariantsRight = {
-  hidden: { opacity: 0, x: 80 },
-  visible: { 
-    opacity: 1, 
-    x: 0, 
-    transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.6 } 
-  }
-};
+// Stat tiles beneath the bio. TODO: tweak values to match your record.
+const STATS = [
+  { value: "9.00", label: "SGPA · Final Sem" },
+  { value: "83%", label: "Best Intern · Zidio" },
+  { value: "5+", label: "AI / full-stack ships" },
+  { value: "3", label: "Years building" },
+];
 
 export const About = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const education = [
-    // ... (Your education data is unchanged)
-    {
-      degree: "B.Tech in Information Technology",
-      institution: "Institute of Engineering and Management, Kolkata",
-      grade: "SGPA: 8.01",
-      year: "Expected Oct 2026",
-    },
-    {
-      degree: "XII (ISC)",
-      institution: "National Gems Higher Secondary School, Behala",
-      grade: "76%",
-      year: "2022",
-    },
-    {
-      degree: "X (ICSE)",
-      institution: "National Gems Higher Secondary School, Behala",
-      grade: "86%",
-      year: "2020",
-    },
-  ];
-
-  const achievements = [
-    // ... (Your achievements data is unchanged)
-    "Secured 83% score and recognized as the best intern by Zidio Development",
-    "Selected for visit to NUS National University of Singapore based on 1st Year performance",
-    "Training provided on AI/ML, IoT and Data Analytics at NUS",
-  ];
-
-  const hobbies = [
-    // ... (Your hobbies data is unchanged)
-    "Augmented Reality Development",
-    "Cyber Security Techniques",
-    "Painting ",
-    "Playing Guitar & Singing",
-  ];
-
   return (
-    <section id="about" className="py-20 relative" ref={ref}>
-      <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-5xl font-bold gradient-text mb-4">About Me</h2>
-          <p className="text-xl text-foreground/70">Get to know me better</p>
+    <div className="space-y-20">
+      {/* Two-column: bio + portrait (spec). */}
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        className="grid items-center gap-12 md:grid-cols-2"
+      >
+        <motion.div variants={fadeUp} className="space-y-6">
+          <p className="chrono-mono text-sm text-era">{PERSONA.tagline}</p>
+          <h3 className="text-3xl font-bold leading-tight md:text-4xl">
+            {PERSONA.name} <span className="text-foreground/40">—</span>{" "}
+            <span className="gradient-text">{PERSONA.role}</span>
+          </h3>
+          <p className="max-w-xl leading-relaxed text-foreground/70">{BIO}</p>
+          <p className="flex items-center gap-2 text-sm text-foreground/60">
+            <MapPin size={15} className="text-era" /> {PERSONA.location} · {PERSONA.relocation}
+          </p>
+
+          {/* Stats row — staggered fade-in. */}
+          <motion.div variants={staggerFast} className="grid grid-cols-2 gap-4 pt-2 sm:grid-cols-4">
+            {STATS.map((s) => (
+              <motion.div key={s.label} variants={fadeUp} className="glass-era rounded-xl p-4">
+                <div className="text-2xl font-bold text-era">{s.value}</div>
+                <div className="chrono-mono mt-1 text-[10px] text-foreground/60">{s.label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Card 1: Education */}
-          <motion.div
-            variants={cardVariantsLeft}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            className="glass rounded-2xl p-8 space-y-6"
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-primary/20 rounded-lg">
-                <GraduationCap className="text-accent" size={24} />
-              </div>
-              <h3 className="text-2xl font-bold">Education</h3>
-            </div>
-            {education.map((edu, index) => (
-              <motion.div
-                key={index}
-                className="border-l-2 border-accent/30 pl-4 space-y-1"
-                initial={{ opacity: 0, x: -20 }}
-                animate={isInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ delay: 0.5 + index * 0.1 }}
-              >
-                <h4 className="font-semibold text-accent">{edu.degree}</h4>
-                <p className="text-sm text-foreground/70">{edu.institution}</p>
-                <p className="text-sm text-foreground/60">{edu.grade} • {edu.year}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+        <motion.div variants={fadeUp} className="relative mx-auto w-full max-w-sm">
+          <div
+            className="absolute inset-0 rounded-2xl opacity-40 blur-3xl"
+            style={{ background: "radial-gradient(circle, hsl(263 80% 60%), transparent 70%)" }}
+          />
+          <img
+            src={profileImage}
+            alt={PERSONA.name}
+            data-cursor
+            className="relative aspect-[4/5] w-full rounded-2xl border border-era/30 object-cover shadow-era"
+          />
+        </motion.div>
+      </motion.div>
 
-          {/* Card 2: Achievements */}
-          <motion.div
-            variants={cardVariantsBottom}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            className="glass rounded-2xl p-8 space-y-6"
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-primary/20 rounded-lg">
-                <Award className="text-accent" size={24} />
+      {/* Education */}
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        className="space-y-4"
+      >
+        <motion.div variants={fadeUp} className="flex items-center gap-3">
+          <div className="bg-era-soft text-era rounded-lg p-2">
+            <GraduationCap size={18} />
+          </div>
+          <h3 className="chrono-mono text-xl font-bold text-era">Education</h3>
+          <div className="era-rule flex-1" />
+        </motion.div>
+        <div className="space-y-3">
+          {EDUCATION.map((e) => (
+            <motion.div
+              key={e.degree}
+              variants={fadeUp}
+              className="glass-era flex flex-col gap-1 rounded-xl p-5 sm:flex-row sm:justify-between"
+            >
+              <div>
+                <p className="font-semibold">{e.degree}</p>
+                <p className="text-sm text-foreground/60">{e.institution}</p>
               </div>
-              <h3 className="text-2xl font-bold">Achievements</h3>
-            </div>
-            {achievements.map((achievement, index) => (
-              <motion.div
-                key={index}
-                className="flex items-start gap-3"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ delay: 0.7 + index * 0.1 }}
-              >
-                <div className="w-2 h-2 bg-accent rounded-full mt-2 flex-shrink-0" />
-                <p className="text-foreground/80">{achievement}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Card 3: Hobbies */}
-          <motion.div
-            variants={cardVariantsRight}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            className="glass rounded-2xl p-8 space-y-6"
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-primary/20 rounded-lg">
-                <Heart className="text-accent" size={24} />
+              <div className="text-sm sm:text-right">
+                <p className="text-era">{e.grade}</p>
+                <p className="chrono-mono text-xs text-foreground/60">{e.year}</p>
               </div>
-              <h3 className="text-2xl font-bold">Hobbies</h3>
-            </div>
-            <div className="grid grid-cols-1 gap-3">
-              {hobbies.map((hobby, index) => (
-                <motion.div
-                  key={index}
-                  className="p-3 bg-primary/10 rounded-lg border border-accent/20"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: 0.9 + index * 0.1 }}
-                  whileHover={{ scale: 1.05, borderColor: "hsl(var(--accent))" }}
-                >
-                  <p className="text-sm text-center">{hobby}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+            </motion.div>
+          ))}
         </div>
+      </motion.div>
+
+      {/* Achievements + Hobbies */}
+      <div className="grid gap-8 md:grid-cols-2">
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          className="space-y-4"
+        >
+          <motion.div variants={fadeUp} className="flex items-center gap-3">
+            <div className="bg-era-soft text-era rounded-lg p-2">
+              <Award size={18} />
+            </div>
+            <h3 className="chrono-mono text-xl font-bold text-era">Achievements</h3>
+            <div className="era-rule flex-1" />
+          </motion.div>
+          <div className="space-y-3">
+            {ACHIEVEMENTS.map((a) => (
+              <motion.p
+                key={a}
+                variants={fadeUp}
+                className="glass-era flex items-start gap-3 rounded-xl p-4 text-sm text-foreground/80"
+              >
+                <div className="bg-era shadow-era mt-1.5 h-2 w-2 shrink-0 rounded-full" />
+                {a}
+              </motion.p>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          className="space-y-4"
+        >
+          <motion.div variants={fadeUp} className="flex items-center gap-3">
+            <div className="bg-era-soft text-era rounded-lg p-2">
+              <Heart size={18} />
+            </div>
+            <h3 className="chrono-mono text-xl font-bold text-era">Hobbies</h3>
+            <div className="era-rule flex-1" />
+          </motion.div>
+          <motion.div variants={staggerFast} className="flex flex-wrap gap-3">
+            {HOBBIES.map((h) => (
+              <motion.span
+                key={h}
+                variants={fadeUp}
+                data-cursor
+                whileHover={{ scale: 1.05 }}
+                className="bg-era-soft border-era/20 rounded-full border px-4 py-2 text-sm"
+              >
+                {h}
+              </motion.span>
+            ))}
+          </motion.div>
+        </motion.div>
       </div>
-    </section>
+    </div>
   );
 };

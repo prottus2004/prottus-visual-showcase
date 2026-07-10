@@ -1,32 +1,19 @@
-import { Background3D } from "@/components/Background3D";
-import { Navigation } from "@/components/Navigation";
+import { PageWrapper } from "@/components/PageWrapper";
 import { Hero } from "@/components/Hero";
-import { motion } from "framer-motion";
 
-// New Variants: Slide in from left
-const pageVariants = {
-  initial: { opacity: 0, x: -50 },
-  animate: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "anticipate" } },
-  exit: { opacity: 0, x: 50, transition: { duration: 0.3, ease: "easeOut" } },
-};
-
+/**
+ * The Present — a single, self-contained summary of Prottus Manna.
+ *
+ * Intentionally trimmed down: this route is the "you have arrived" beat of the
+ * chronicle, so it holds only the Hero (name, role, portrait, CTAs) and stops.
+ * Everything else (about, work, skills, testimonials, footer) lives on its
+ * own route or is removed from this surface entirely.
+ */
 const Index = () => {
   return (
-    <div className="relative">
-      <Background3D />
-      <Navigation />
-      <motion.main
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        variants={pageVariants}
-      >
-        <Hero />
-      </motion.main>
-      <footer className="py-8 text-center text-foreground/60 border-t border-accent/20">
-        <p>© 2025 Prottus Manna. Crafted with passion and precision.</p>
-      </footer>
-    </div>
+    <PageWrapper>
+      <Hero />
+    </PageWrapper>
   );
 };
 

@@ -3,47 +3,69 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
-import React, { useState } from "react"; // Import useState
-import { Welcome } from "@/components/Welcome"; // Import the Welcome component
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+import { Welcome } from "@/components/Welcome";
+import { TimePortal } from "@/components/TimePortal";
+import { Chronometer } from "@/components/Chronometer";
+import { Navigation } from "@/components/Navigation";
+import { CustomCursor } from "@/components/CustomCursor";
+import { BackToTop } from "@/components/BackToTop";
+import { useEra } from "@/hooks/useEra";
 
-// Import Pages
+// Pages
 import Index from "./pages/Index";
 import AboutPage from "./pages/AboutPage";
 import SkillsPage from "./pages/SkillsPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import ExperiencePage from "./pages/ExperiencePage";
+import CertificationsPage from "./pages/CertificationsPage";
+import ResumePage from "./pages/ResumePage";
 import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-// This component remains the same as before
-const AnimatedRoutes = () => {
+/** Inner shell — lives inside <BrowserRouter> so it can read the route/era. */
+const AppShell = () => {
+  const era = useEra();
   const location = useLocation();
+
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Index />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/skills" element={<SkillsPage />} />
-        <Route path="/projects" element={<ProjectsPage />} />
-        <Route path="/experience" element={<ExperiencePage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </AnimatePresence>
+    <>
+      {/* Persistent 3D time portal + HUD — do not remount between routes */}
+      <TimePortal hue={era.hue} />
+      <Chronometer era={era} />
+      <Navigation />
+      <CustomCursor />
+      <BackToTop />
+
+      {/* Page transitions */}
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Index />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/skills" element={<SkillsPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/experience" element={<ExperiencePage />} />
+          <Route path="/certifications" element={<CertificationsPage />} />
+          <Route path="/resume" element={<ResumePage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AnimatePresence>
+    </>
   );
 };
 
-const App = () => {
-  // State to manage showing the welcome screen.
-  const [showWelcomeScreen, setShowWelcomeScreen] = useState(true);
+const pageTransition = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+};
 
-  // This function will be passed to the Welcome component to call when it's done
-  const handleWelcomeFinished = () => {
-    setShowWelcomeScreen(false);
-  };
+const App = () => {
+  const [showWelcome, setShowWelcome] = useState(true);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -51,19 +73,15 @@ const App = () => {
         <Toaster />
         <Sonner />
 
-        {/* AnimatePresence will handle the exit animation of the Welcome screen */}
         <AnimatePresence>
-          {showWelcomeScreen && <Welcome onFinished={handleWelcomeFinished} />}
+          {showWelcome && <Welcome onFinished={() => setShowWelcome(false)} />}
         </AnimatePresence>
-        
-        {/* We render the main app simultaneously.
-          The Welcome screen will overlay it using a fixed position.
-          When the Welcome screen animates out, the main app is revealed.
-        */}
-        <BrowserRouter>
-          <AnimatedRoutes />
-        </BrowserRouter>
 
+        <BrowserRouter>
+          <motion.div variants={pageTransition} initial="initial" animate="animate">
+            <AppShell />
+          </motion.div>
+        </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
   );
