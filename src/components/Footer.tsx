@@ -6,6 +6,7 @@ import { ERAS, PERSONA, SOCIALS } from "@/data/chronicle";
 import { useToast } from "@/hooks/use-toast";
 import { MagneticButton } from "./MagneticButton";
 import { AvailabilityBadge } from "./AvailabilityBadge";
+import { DecorativeBlob } from "@/components/DecorativeBlob";
 import { fadeUp, staggerContainer, viewportOnce } from "@/lib/motion";
 
 const SOCIAL_ICONS: Record<string, typeof Github> = {
@@ -43,14 +44,31 @@ export const Footer = () => {
   };
 
   return (
-    <footer id="contact" className="relative py-32 md:py-40">
-      <div className="container mx-auto px-6">
+    <footer id="contact" className="relative overflow-hidden py-32 md:py-40">
+      {/* Decorative blob on the left, subtle. */}
+      <DecorativeBlob
+        variant="purple"
+        size="lg"
+        position="absolute -left-40 top-1/4"
+        opacity={0.3}
+      />
+      <DecorativeBlob
+        variant="coral"
+        size="md"
+        position="absolute -right-32 bottom-0"
+        opacity={0.25}
+      />
+
+      <div className="container relative z-10 mx-auto px-6">
         <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={viewportOnce}>
-          <motion.div variants={fadeUp} className="chrono-mono mb-4 text-xs text-era">
+          <motion.div variants={fadeUp} className="eyebrow mb-4 text-coral-700">
             {era.chapter} · {era.year}
           </motion.div>
 
-          <motion.h2 variants={fadeUp} className="max-w-3xl text-5xl font-bold leading-tight md:text-7xl">
+          <motion.h2
+            variants={fadeUp}
+            className="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl"
+          >
             Let's build something <span className="gradient-text">together.</span>
           </motion.h2>
 
@@ -64,24 +82,24 @@ export const Footer = () => {
                 type="button"
                 data-cursor
                 onClick={copyEmail}
-                className="inline-flex items-center gap-3 rounded-full glass-era px-6 py-3"
+                className="inline-flex items-center gap-3 rounded-full border border-border bg-card px-6 py-3 hover:shadow-soft transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2"
               >
                 <span className="text-lg">{PERSONA.email}</span>
-                <span className="text-era">{copied ? <Check size={18} /> : <Copy size={18} />}</span>
+                <span className="text-coral-700">{copied ? <Check size={18} /> : <Copy size={18} />}</span>
               </button>
             </MagneticButton>
             <MagneticButton>
               <Link
                 to="/contact"
                 data-cursor
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-accent px-6 py-3 text-white"
+                className="inline-flex items-center gap-2 rounded-full bg-foreground text-background px-6 py-3 font-medium hover:shadow-elevated transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2"
               >
                 Start a conversation <ArrowUpRight size={18} />
               </Link>
             </MagneticButton>
           </motion.div>
 
-          <motion.div variants={fadeUp} className="mt-10 flex gap-4">
+          <motion.div variants={fadeUp} className="mt-10 flex gap-3">
             {SOCIALS.map((s) => {
               const Icon = SOCIAL_ICONS[s.label];
               if (!Icon) return null;
@@ -95,7 +113,7 @@ export const Footer = () => {
                   data-cursor
                   whileHover={{ scale: 1.2, rotate: 5 }}
                   whileTap={{ scale: 0.9 }}
-                  className="grid h-11 w-11 place-items-center rounded-full glass text-foreground/60 transition-colors hover:text-era"
+                  className="grid h-11 w-11 place-items-center rounded-full border border-border bg-card text-foreground/60 transition-colors hover:border-coral-200 hover:bg-coral-100 hover:text-coral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2"
                 >
                   <Icon size={20} />
                 </motion.a>
@@ -103,21 +121,21 @@ export const Footer = () => {
             })}
           </motion.div>
 
-          <motion.div variants={fadeUp} className="era-rule my-12 max-w-4xl" />
+          <motion.div variants={fadeUp} className="divider my-12 max-w-4xl" />
 
           <motion.div
             variants={fadeUp}
             className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between"
           >
             <AvailabilityBadge />
-            <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-foreground/50">
+            <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-foreground/60">
               {FOOTER_LINKS.map(([name, path]) => (
-                <Link key={path} to={path} data-cursor className="transition-colors hover:text-era">
+                <Link key={path} to={path} data-cursor className="transition-colors hover:text-foreground">
                   {name}
                 </Link>
               ))}
             </nav>
-            <p className="chrono-mono text-xs text-foreground/40">© {new Date().getFullYear()} {PERSONA.name}</p>
+            <p className="eyebrow text-[10px] text-foreground/40">© {new Date().getFullYear()} {PERSONA.name}</p>
           </motion.div>
         </motion.div>
       </div>

@@ -3,61 +3,112 @@
 @tailwind utilities;
 
 /* ===========================================================================
-   THE CHRONICLE — time-travel design system
-   All colors HSL. Era accent is driven by --era-hue, set per route.
+   COHESION-STYLE LIGHT THEME
+   White base, near-black text, colorful accents via a 7-hue palette
+   (coral, pink, purple, blue, yellow, green, orange). All colors HSL.
    ========================================================================== */
 
 @layer base {
   :root {
-    --background: 230 35% 4%;
-    --foreground: 210 30% 98%;
+    /* Base palette */
+    --background: 0 0% 100%;
+    --foreground: 230 25% 8%;
 
-    --card: 230 25% 8%;
-    --card-foreground: 210 30% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 230 25% 8%;
 
-    --popover: 230 25% 8%;
-    --popover-foreground: 210 30% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 230 25% 8%;
 
-    --primary: 263 80% 60%;
+    --primary: 230 25% 8%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 263 80% 70%;
 
-    --secondary: 230 20% 14%;
-    --secondary-foreground: 210 30% 98%;
+    --secondary: 40 20% 96%;
+    --secondary-foreground: 230 25% 8%;
 
-    --muted: 230 20% 14%;
-    --muted-foreground: 225 15% 65%;
+    --muted: 40 15% 95%;
+    --muted-foreground: 230 12% 45%;
 
-    --accent: 189 90% 55%;
-    --accent-foreground: 230 35% 4%;
-    --accent-glow: 189 90% 70%;
+    --accent: 230 25% 8%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 45%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 230 25% 16%;
-    --input: 230 25% 16%;
-    --ring: 263 80% 60%;
+    --border: 230 15% 90%;
+    --input: 230 15% 90%;
+    --ring: 230 25% 8%;
 
     --radius: 1rem;
 
-    /* Era-driven accent. Updated by Chronometer per route. */
-    --era-hue: 189;
-    --era: hsl(var(--era-hue) 90% 60%);
-    --era-soft: hsl(var(--era-hue) 90% 60% / 0.15);
+    /* Colorful accent palette (7 hues) */
+    --coral: 12 90% 60%;
+    --coral-soft: 12 90% 60% / 0.14;
+    --pink: 330 85% 62%;
+    --pink-soft: 330 85% 62% / 0.14;
+    --purple: 263 75% 62%;
+    --purple-soft: 263 75% 62% / 0.14;
+    --blue: 210 90% 58%;
+    --blue-soft: 210 90% 58% / 0.14;
+    --yellow: 45 95% 55%;
+    --yellow-soft: 45 95% 55% / 0.14;
+    --green: 142 65% 48%;
+    --green-soft: 142 65% 48% / 0.14;
+    --orange: 28 90% 58%;
+    --orange-soft: 28 90% 58% / 0.14;
 
-    --gradient-primary: linear-gradient(135deg, hsl(263 80% 60%), hsl(230 70% 50%));
-    --gradient-accent: linear-gradient(135deg, hsl(189 90% 55%), hsl(263 80% 60%));
-    --gradient-era: linear-gradient(135deg, hsl(var(--era-hue) 90% 60%), hsl(calc(var(--era-hue) + 74) 80% 60%));
-    --gradient-glow: radial-gradient(circle at 50% 50%, hsl(var(--era-hue) 90% 60% / 0.22), transparent 70%);
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(230 25% 8%), hsl(230 20% 25%));
+    --gradient-accent: linear-gradient(135deg, hsl(12 90% 60%), hsl(330 85% 62%));
+    --gradient-hero-text: linear-gradient(135deg, hsl(12 90% 60%), hsl(330 85% 62%), hsl(263 75% 62%));
+    --gradient-card-stripe: linear-gradient(90deg, hsl(12 90% 60%), hsl(330 85% 62%));
 
-    --shadow-glow: 0 0 60px hsl(var(--era-hue) 90% 60% / 0.4);
-    --shadow-accent-glow: 0 0 40px hsl(189 90% 55% / 0.5);
-    --shadow-card: 0 20px 50px -10px hsl(230 35% 4% / 0.8);
-
-    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Shadows (soft, layered) */
+    --shadow-card: 0 1px 2px hsl(230 25% 8% / 0.04), 0 8px 24px hsl(230 25% 8% / 0.06);
+    --shadow-elevated: 0 4px 8px hsl(230 25% 8% / 0.04), 0 16px 40px hsl(230 25% 8% / 0.08);
 
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    /* Frosted-glass wash for floating chrome. Swapped in dark mode below. */
+    --glass-bg: rgba(255, 255, 255, 0.72);
+  }
+
+  /* Dark theme — same Cohesion palette, inverted. The colourful accent
+     palette is inherited from :root (it reads well on both bases); only the
+     neutral surfaces, borders, text and shadows flip. */
+  .dark {
+    --background: 230 25% 8%;
+    --foreground: 0 0% 98%;
+
+    --card: 230 22% 11%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 230 22% 11%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 230 25% 8%;
+
+    --secondary: 230 18% 15%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 230 18% 15%;
+    --muted-foreground: 230 10% 68%;
+
+    --accent: 230 18% 18%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62% 55%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 230 15% 22%;
+    --input: 230 15% 22%;
+    --ring: 12 90% 60%;
+
+    --glass-bg: hsl(230 25% 8% / 0.72);
+
+    --shadow-card: 0 1px 2px hsl(0 0% 0% / 0.4), 0 8px 24px hsl(0 0% 0% / 0.45);
+    --shadow-elevated: 0 4px 8px hsl(0 0% 0% / 0.4), 0 16px 40px hsl(0 0% 0% / 0.5);
   }
 }
 
@@ -72,10 +123,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
-    background-image:
-      radial-gradient(ellipse 80% 60% at 50% -10%, hsl(var(--era-hue) 70% 40% / 0.25), transparent 60%),
-      radial-gradient(ellipse 70% 50% at 100% 100%, hsl(263 70% 40% / 0.18), transparent 60%);
-    background-attachment: fixed;
   }
 
   /* Smooth scrolling is owned by Lenis (see LenisProvider) — do not set
@@ -83,76 +130,68 @@
 }
 
 @layer components {
+  /* Frosted glass for floating chrome (nav, sheets). White wash + blur. */
   .glass {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border));
   }
 
-  .glass-era {
-    background:
-      linear-gradient(180deg, hsl(var(--era-hue) 60% 30% / 0.18), rgba(255, 255, 255, 0.03));
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid hsl(var(--era-hue) 90% 60% / 0.25);
+  /* The everyday light surface: white card, hairline border, soft shadow. */
+  .surface {
+    background: white;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
   }
 
-  .glow-text {
-    text-shadow: 0 0 24px hsl(var(--era-hue) 90% 60% / 0.55);
-  }
-
+  /* Gradient text (coral → pink → purple) used for accent words in H1s. */
   .gradient-text {
-    background: var(--gradient-era);
+    background: var(--gradient-hero-text);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    color: transparent;
   }
 
-  .gradient-text-static {
-    background: var(--gradient-accent);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Chronometer / HUD mono label */
-  .chrono-mono {
+  /* Eyebrow / small uppercase mono label. Renamed from .chrono-mono. */
+  .eyebrow {
     font-family: var(--font-mono);
-    letter-spacing: 0.18em;
+    font-size: 11px;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
   }
 
-  /* Faint scanline overlay for the HUD vibe */
-  .scanlines::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.03) 0px,
-      rgba(255, 255, 255, 0.03) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-    mix-blend-mode: overlay;
-    opacity: 0.4;
-  }
-
-  /* Thin era-colored rule */
-  .era-rule {
+  /* Thin hairline divider. Renamed from .era-rule. */
+  .divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--era-hue) 90% 60% / 0.6), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--border)), transparent);
   }
 }
 
+/* Dark-mode readability: the coral-700 shade is tuned for white cards. On the
+   dark base it reads too dim, so lighten it (and the matching hover shade)
+   when the dark class is active. */
+.dark .text-coral-700 {
+  color: hsl(12 90% 70%);
+}
+.dark .hover\:text-coral-700:hover {
+  color: hsl(12 90% 70%);
+}
+
+/* The other six accent 700 shades are tuned for white cards too (low
+   lightness). Lighten each in dark mode so accent.text stays readable on the
+   dark card surface. Mirrors the coral-700 override above. */
+.dark .text-pink-700 { color: hsl(330 85% 72%); }
+.dark .text-purple-700 { color: hsl(263 75% 75%); }
+.dark .text-blue-700 { color: hsl(210 90% 70%); }
+.dark .text-yellow-700 { color: hsl(45 95% 62%); }
+.dark .text-green-700 { color: hsl(142 65% 60%); }
+.dark .text-orange-700 { color: hsl(28 90% 68%); }
+
 @layer utilities {
-  .text-era { color: hsl(var(--era-hue) 90% 65%); }
-  .bg-era { background-color: hsl(var(--era-hue) 90% 60%); }
-  .bg-era-soft { background-color: var(--era-soft); }
-  .border-era { border-color: hsl(var(--era-hue) 90% 60% / 0.4); }
-  .shadow-era { box-shadow: 0 0 40px hsl(var(--era-hue) 90% 60% / 0.35); }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }

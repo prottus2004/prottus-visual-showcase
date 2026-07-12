@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Mail, Phone, MapPin, Globe, Send, Github, Linkedin, Facebook, Instagram, Copy, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -70,7 +69,7 @@ export const Contact = () => {
   };
 
   return (
-    <div ref={ref} className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+    <div ref={ref} className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
       {/* Left: contact info */}
       <motion.div
         initial={{ opacity: 0, x: -40 }}
@@ -78,9 +77,9 @@ export const Contact = () => {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="space-y-6"
       >
-        <div className="glass-era rounded-2xl p-8 space-y-6">
-          <h3 className="text-2xl font-bold mb-2">Receiver Coordinates</h3>
-          <p className="text-foreground/60 text-sm -mt-4">
+        <div className="space-y-6 rounded-2xl border border-border bg-card p-8 shadow-soft">
+          <h3 className="mb-2 text-2xl font-bold">Receiver Coordinates</h3>
+          <p className="-mt-4 text-sm text-foreground/60">
             Transmit a signal across the spacetime continuum.
           </p>
 
@@ -90,37 +89,37 @@ export const Contact = () => {
             onClick={copyEmail}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="group flex w-full items-center justify-between gap-3 rounded-lg bg-era-soft p-4 transition-colors hover:bg-era/10"
+            className="group flex w-full items-center justify-between gap-3 rounded-xl bg-secondary p-4 transition-colors hover:bg-coral-100"
           >
             <span className="flex items-center gap-4">
-              <span className="rounded-lg bg-era/20 p-3 text-era transition-colors group-hover:bg-era/30">
+              <span className="rounded-lg bg-coral-100 p-3 text-coral-700 transition-colors group-hover:bg-coral-200">
                 <Mail size={18} />
               </span>
               <span className="text-sm text-foreground/80">{PERSONA.email}</span>
             </span>
-            <span className="text-era">{copied ? <Check size={18} /> : <Copy size={18} />}</span>
+            <span className="text-coral-700">{copied ? <Check size={18} /> : <Copy size={18} />}</span>
           </motion.button>
 
           {contactInfo.map((info, i) => (
             <motion.a
               key={info.text}
               href={info.href}
-              className="flex items-center gap-4 p-4 rounded-lg bg-era-soft hover:bg-era/10 transition-colors group"
+              className="group flex items-center gap-4 rounded-xl bg-secondary p-4 hover:bg-coral-100 transition-colors"
               initial={{ opacity: 0, x: -16 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.3 + i * 0.1 }}
               whileHover={{ scale: 1.02 }}
             >
-              <div className="p-3 rounded-lg bg-era/20 text-era group-hover:bg-era/30 transition-colors">
+              <div className="rounded-lg bg-coral-100 p-3 text-coral-700 transition-colors group-hover:bg-coral-200">
                 <info.icon size={18} />
               </div>
-              <span className="text-foreground/80 text-sm">{info.text}</span>
+              <span className="text-sm text-foreground/80">{info.text}</span>
             </motion.a>
           ))}
 
           <div className="pt-2">
-            <h4 className="text-lg font-semibold mb-4 chrono-mono text-sm text-era">open channels</h4>
-            <div className="flex gap-4">
+            <h4 className="eyebrow mb-4 text-coral-700">open channels</h4>
+            <div className="flex gap-3">
               {SOCIALS.map((social, i) => {
                 const Icon = SOCIAL_ICONS[social.label];
                 if (!Icon) return null;
@@ -131,14 +130,14 @@ export const Contact = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="p-3 glass rounded-lg hover:bg-era/20 transition-colors group"
+                    className="rounded-lg border border-border bg-card p-3 text-foreground/60 transition-colors hover:border-coral-200 hover:bg-coral-100 hover:text-coral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-500"
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={inView ? { opacity: 1, scale: 1 } : {}}
                     transition={{ delay: 0.4 + i * 0.1 }}
                     whileHover={{ scale: 1.12, rotate: 5 }}
                     whileTap={{ scale: 0.9 }}
                   >
-                    <Icon className="text-foreground/60 group-hover:text-era transition-colors" size={20} />
+                    <Icon size={20} />
                   </motion.a>
                 );
               })}
@@ -152,9 +151,9 @@ export const Contact = () => {
         initial={{ opacity: 0, x: 40 }}
         animate={inView ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.4 }}
-        className="glass-era rounded-2xl p-8"
+        className="rounded-2xl border border-border bg-card p-8 shadow-soft"
       >
-        <h3 className="text-2xl font-bold mb-6">Compose Transmission</h3>
+        <h3 className="mb-6 text-2xl font-bold">Compose Transmission</h3>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <input
             type="text"
@@ -164,7 +163,7 @@ export const Contact = () => {
             placeholder="Your name"
             required
             maxLength={100}
-            className="w-full px-4 py-3 bg-background/40 border border-era/20 rounded-lg focus:outline-none focus:border-era transition-colors placeholder:text-foreground/40"
+            className="w-full rounded-xl border border-input bg-card px-4 py-3 transition-colors placeholder:text-foreground/40 focus:border-coral-500 focus:outline-none focus:ring-2 focus:ring-coral-200"
           />
           <input
             type="email"
@@ -174,7 +173,7 @@ export const Contact = () => {
             placeholder="Your email"
             required
             maxLength={255}
-            className="w-full px-4 py-3 bg-background/40 border border-era/20 rounded-lg focus:outline-none focus:border-era transition-colors placeholder:text-foreground/40"
+            className="w-full rounded-xl border border-input bg-card px-4 py-3 transition-colors placeholder:text-foreground/40 focus:border-coral-500 focus:outline-none focus:ring-2 focus:ring-coral-200"
           />
           <textarea
             rows={4}
@@ -184,13 +183,13 @@ export const Contact = () => {
             placeholder="Your message"
             required
             maxLength={1000}
-            className="w-full px-4 py-3 bg-background/40 border border-era/20 rounded-lg focus:outline-none focus:border-era transition-colors resize-none placeholder:text-foreground/40"
+            className="w-full resize-none rounded-xl border border-input bg-card px-4 py-3 transition-colors placeholder:text-foreground/40 focus:border-coral-500 focus:outline-none focus:ring-2 focus:ring-coral-200"
           />
           <motion.button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 bg-gradient-to-r from-primary to-accent rounded-lg text-white font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            whileHover={!isSubmitting ? { scale: 1.02, boxShadow: "0 0 30px hsl(var(--primary) / 0.5)" } : {}}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-foreground py-3 font-medium text-background disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-elevated transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2"
+            whileHover={!isSubmitting ? { scale: 1.02 } : {}}
             whileTap={!isSubmitting ? { scale: 0.98 } : {}}
           >
             <span>{isSubmitting ? "Transmitting..." : "Transmit Signal"}</span>

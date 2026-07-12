@@ -22,13 +22,13 @@ export const AvailabilityBadge = () => {
   }, []);
 
   return (
-    <div className="inline-flex items-center gap-2.5 rounded-full glass px-4 py-2">
+    <div className="inline-flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-2 shadow-soft">
       <span className="relative flex h-2 w-2">
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
       </span>
       <span className="text-xs text-foreground/70">Available for work</span>
-      <span className="chrono-mono text-xs text-era">
+      <span className="eyebrow text-[10px] text-foreground/70">
         {time} <span className="text-foreground/40">IST</span>
       </span>
     </div>

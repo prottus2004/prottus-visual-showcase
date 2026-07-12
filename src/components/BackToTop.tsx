@@ -32,7 +32,7 @@ export const BackToTop = () => {
           exit={{ opacity: 0, scale: 0.8, y: 10 }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.92 }}
-          className="fixed bottom-6 right-6 z-50 grid h-12 w-12 place-items-center rounded-full glass border border-white/10 text-foreground/70 hover:text-era transition-colors"
+          className="fixed bottom-6 right-6 z-50 grid h-12 w-12 place-items-center rounded-full bg-card border border-border text-foreground/70 hover:text-foreground shadow-soft transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-500 focus-visible:ring-offset-2"
         >
           <ArrowUp size={20} />
         </motion.button>

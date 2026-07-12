@@ -11,6 +11,7 @@ import { Chronometer } from "@/components/Chronometer";
 import { Navigation } from "@/components/Navigation";
 import { CustomCursor } from "@/components/CustomCursor";
 import { BackToTop } from "@/components/BackToTop";
+import { GrainOverlay } from "@/components/GrainOverlay";
 import { useEra } from "@/hooks/useEra";
 
 // Pages
@@ -33,8 +34,9 @@ const AppShell = () => {
 
   return (
     <>
-      {/* Persistent 3D time portal + HUD — do not remount between routes */}
-      <TimePortal hue={era.hue} />
+      {/* Persistent decorative background layers — do not remount between routes */}
+      <TimePortal />
+      <GrainOverlay />
       <Chronometer era={era} />
       <Navigation />
       <CustomCursor />

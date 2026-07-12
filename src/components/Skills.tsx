@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { SKILL_CATEGORIES } from "@/data/chronicle";
 import { getIcon } from "@/lib/icons";
 import { staggerContainer, cardReveal, viewportOnce } from "@/lib/motion";
+import { getAccentColor } from "@/lib/accent";
 
 export const Skills = () => {
   const ref = useRef(null);
@@ -19,29 +20,30 @@ export const Skills = () => {
     >
       {SKILL_CATEGORIES.map((cat) => {
         const Icon = getIcon(cat.icon);
+        const accent = getAccentColor(cat.hue);
         return (
           <motion.div
             key={cat.title}
             variants={cardReveal}
             data-cursor
-            className="glass-era rounded-2xl p-6 space-y-4 group hover:shadow-era transition-all duration-300"
+            className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-soft hover:shadow-elevated transition-all duration-300"
             whileHover={{ y: -6 }}
-            style={{ borderTopColor: `hsl(${cat.hue} 90% 60% / 0.5)` }}
           >
+            {/* Colored top stripe driven by hue → accent bucket. */}
             <div
-              className="w-12 h-12 rounded-lg p-3 group-hover:scale-110 transition-transform"
-              style={{
-                background: `linear-gradient(135deg, hsl(${cat.hue} 90% 60%), hsl(${(cat.hue + 60) % 360} 80% 55%))`,
-              }}
+              className={`absolute inset-x-0 top-0 h-1 ${accent.bg}`}
+              aria-hidden
+            />
+
+            <div
+              className={`w-12 h-12 rounded-lg p-3 ${accent.soft}`}
             >
-              <Icon className="text-white" size={24} />
+              <Icon className={accent.text} size={24} />
             </div>
 
-            <h3 className="text-xl font-bold" style={{ color: `hsl(${cat.hue} 90% 70%)` }}>
-              {cat.title}
-            </h3>
+            <h3 className="mt-4 text-xl font-bold text-foreground">{cat.title}</h3>
 
-            <div className="space-y-2">
+            <div className="mt-3 space-y-2">
               {cat.skills.map((skill, i) => (
                 <motion.div
                   key={skill}
@@ -50,10 +52,7 @@ export const Skills = () => {
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: 0.3 + i * 0.04 }}
                 >
-                  <div
-                    className="w-1.5 h-1.5 rounded-full"
-                    style={{ background: `hsl(${cat.hue} 90% 60%)` }}
-                  />
+                  <div className={`h-1.5 w-1.5 rounded-full ${accent.bg}`} />
                   <span className="text-sm text-foreground/80">{skill}</span>
                 </motion.div>
               ))}

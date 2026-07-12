@@ -1,6 +1,10 @@
 // ============================================================================
-//  THE CHRONICLE — single source of truth for the time-travel portfolio.
+//  THE CHRONICLE — single source of truth for the portfolio.
 //  All content (CV, eras, story) lives here. Sections read from this file.
+//
+//  Note: era.hue and era.shape were removed in the Cohesion-style restyle —
+//  per-card color now flows from the shared 7-hue accent palette via
+//  getAccentColor() in lib/accent.ts.
 // ============================================================================
 
 export type EraId =
@@ -21,10 +25,6 @@ export interface Era {
   chapter: string;     // "Chapter I"
   tagline: string;     // short story line
   narration: string;   // longer narrative intro
-  /** Portal / accent hue in degrees (HSL) used to morph the 3D scene per era. */
-  hue: number;
-  /** Motif shape rendered as the era's 3D object. */
-  shape: "orb" | "cube" | "torus" | "crystal" | "portal" | "scroll" | "beacon";
 }
 
 export const ERAS: Record<EraId, Era> = {
@@ -37,8 +37,6 @@ export const ERAS: Record<EraId, Era> = {
     tagline: "You have arrived.",
     narration:
       "A traveler steps out of the chrono-stream into the now. The machine hums behind you, the stars still folding into place. This is the present moment of Prottus Manna — full-stack developer, AI engineer, and builder of strange intelligent things.",
-    hue: 189,
-    shape: "portal",
   },
   origins: {
     id: "origins",
@@ -49,8 +47,6 @@ export const ERAS: Record<EraId, Era> = {
     tagline: "Where the story began.",
     narration:
       "Rewind the chronometer. Before the machines, before the models — a curious mind in Kolkata, gathering knowledge across classrooms and code editors. These are the roots that grew into an engineer.",
-    hue: 263,
-    shape: "crystal",
   },
   arsenal: {
     id: "arsenal",
@@ -61,8 +57,6 @@ export const ERAS: Record<EraId, Era> = {
     tagline: "Tools collected through time.",
     narration:
       "Every traveler carries an arsenal. Forged across semesters, internships, and late-night builds, these are the languages, frameworks, and systems stockpiled for whatever the next era demands.",
-    hue: 28,
-    shape: "cube",
   },
   inventions: {
     id: "inventions",
@@ -73,8 +67,6 @@ export const ERAS: Record<EraId, Era> = {
     tagline: "Artifacts from the lab.",
     narration:
       "Step into the workshop. Each invention is an artifact — a snapshot of a problem solved in its own era. Real-time vision, fraud-hunting agents, and a voice that commands the machine itself.",
-    hue: 142,
-    shape: "torus",
   },
   expeditions: {
     id: "expeditions",
@@ -85,8 +77,6 @@ export const ERAS: Record<EraId, Era> = {
     tagline: "Missions through the timeline.",
     narration:
       "No traveler journeys alone — these are the expeditions: a remote internship won as the best of the cohort, and a study voyage to a university across the sea. Each left its mark.",
-    hue: 330,
-    shape: "beacon",
   },
   credentials: {
     id: "credentials",
@@ -97,8 +87,6 @@ export const ERAS: Record<EraId, Era> = {
     tagline: "Sigils of mastery and service.",
     narration:
       "Each credential is a stamp on the passport of the journey — formal AI/ML and engineering programmes, plus the extra-curricular service that shaped the person behind the code. Click any sigil to enlarge it in-page.",
-    hue: 45,
-    shape: "scroll",
   },
   chronicle: {
     id: "chronicle",
@@ -109,8 +97,6 @@ export const ERAS: Record<EraId, Era> = {
     tagline: "The complete dossier.",
     narration:
       "Every time traveler keeps a chronicle — the unexpurgated record of education, work, and craft. Read it in full, or carry a copy into your own era.",
-    hue: 210,
-    shape: "scroll",
   },
   transmit: {
     id: "transmit",
@@ -121,8 +107,6 @@ export const ERAS: Record<EraId, Era> = {
     tagline: "Send a signal across spacetime.",
     narration:
       "The journey loops forward. If our timelines should intersect, transmit a signal — a message, a role, an idea worth building. The receiver is always on.",
-    hue: 189,
-    shape: "beacon",
   },
 };
 
